@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Reader | Immersive Reading Experience</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-light: #e0e7ff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #1e293b;
+            --transition-speed: 0.3s;
+            --active-line-bg: var(--primary-light);
+            --active-line-color: var(--primary-color);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed) ease;
+            line-height: 1.6;
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .read-container {
+            max-width: 90%;
+            margin: 0 auto;
+            background: var(--card-bg-light);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            height: calc(100vh - 120px);
+            transition: all var(--transition-speed) ease;
+        }
+
+        body.dark-mode .read-container {
+            background: var(--card-bg-dark);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .text-content {
+            padding: 2rem;
+            height: calc(100% - 50px);
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .line {
+            transition: all var(--transition-speed) ease;
+            opacity: 0.3;
+            filter: blur(2px);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            position: relative;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.no-blur .line {
+            filter: none !important;
+        }
+
+        .active {
+            opacity: 1;
+            filter: blur(0);
+            font-weight: 500;
+            color: var(--active-line-color);
+            background-color: var(--active-line-bg);
+            transform: scale(1.02);
+        }
+
+        body.dark-mode .active {
+            background-color: rgba(67, 97, 238, 0.2);
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        body.dark-mode .control-btn {
+            background: #334155;
+            color: #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown-menu {
+            border-radius: 8px;
+            padding: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .dropdown-menu {
+            background: #334155;
+            border: 1px solid #475569;
+        }
+
+        body.dark-mode .dropdown-item {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background: #475569;
+        }
+
+        .zoom-display {
+            min-width: 60px;
+            text-align: center;
+            font-weight: 500;
+            font-feature-settings: "tnum";
+        }
+
+        .file-upload-container {
+            padding: 2rem;
+            text-align: center;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            margin: 1.5rem auto;
+            max-width: 900px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        body.dark-mode .file-upload-container {
+            border-color: #475569;
+        }
+
+        .file-upload-container:hover {
+            border-color: var(--primary-color);
+        }
+
+        .file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .progress-container {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        /* Upload toggle in navbar */
+        .upload-toggle {
+            display: flex;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .upload-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .upload-toggle i {
+            margin-right: 0.5rem;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        @media (max-width: 768px) {
+            .read-container {
+                height: calc(100vh - 100px);
+                border-radius: 0;
+            }
+            
+            .navbar .dropdown {
+                margin-bottom: 0.5rem;
+            }
+            
+            .upload-toggle span {
+                display: none;
+            }
+            
+            .upload-toggle i {
+                margin-right: 0;
+            }
+        }
+
+        /* Color picker styles */
+        .color-picker-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
+
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: var(--text-primary);
+        }
+
+        body.dark-mode .color-option.selected {
+            border-color: #e2e8f0;
+        }
+
+        /* Document title styles */
+        .document-title {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: var(--card-bg-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        body.dark-mode .document-title {
+            border-bottom-color: #334155;
+            color: #e2e8f0;
+            background-color: var(--card-bg-dark);
+        }
+
+        .document-title i {
+            color: var(--primary-color);
+        }
+
+        /* Zoom change notification */
+        .zoom-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .zoom-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Bookmark styles */
+        .bookmark-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .line:hover .bookmark-btn {
+            opacity: 1;
+        }
+
+        .bookmark-btn.bookmarked {
+            color: #f59e0b;
+            opacity: 1;
+        }
+
+        /* Search bar styles */
+        .search-container {
+            position: relative;
+            margin-right: 1rem;
+            min-width: 200px;
+        }
+
+        .search-input {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        body.dark-mode .search-results {
+            background: #334155;
+            border: 1px solid #475569;
+        }
+
+        .search-result-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark-mode .search-result-item {
+            border-bottom-color: #475569;
+        }
+
+        .search-result-item:hover {
+            background: #f1f5f9;
+        }
+
+        body.dark-mode .search-result-item:hover {
+            background: #475569;
+        }
+
+        .search-result-highlight {
+            background-color: yellow;
+            color: black;
+        }
+
+        /* Bookmarks panel */
+        .bookmarks-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 300px;
+            background: var(--card-bg-light);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 70vh;
+            overflow-y: auto;
+            display: none;
+            padding: 1rem;
+        }
+
+        body.dark-mode .bookmarks-panel {
+            background: var(--card-bg-dark);
+            border: 1px solid #475569;
+        }
+
+        .bookmarks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark-mode .bookmarks-header {
+            border-bottom-color: #475569;
+        }
+
+        .bookmark-item {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+        }
+
+        body.dark-mode .bookmark-item {
+            background: #334155;
+        }
+
+        .bookmark-item:hover {
+            background: #e2e8f0;
+        }
+
+        body.dark-mode .bookmark-item:hover {
+            background: #475569;
+        }
+
+        .bookmark-item-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .bookmark-item-remove {
+            color: #ef4444;
+            margin-left: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Download button */
+        .download-btn {
+            display: flex;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all var(--transition-speed) ease;
+            border: none;
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .download-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* TTS pause button */
+        .tts-pause-btn {
+            display: none;
+        }
+
+        .tts-playing .tts-play-btn {
+            display: none;
+        }
+
+        .tts-playing .tts-pause-btn {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                min-width: 150px;
+            }
+            
+            .bookmarks-panel {
+                width: 250px;
+            }
+            
+            .download-btn span {
+                display: none;
+            }
+            
+            .download-btn i {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-book-reader me-2"></i>
+                <span>Focus Reader</span>
+            </a>
+            
+            <div class="d-flex align-items-center">
+                <!-- Search Bar -->
+                <div class="search-container me-3">
+                    <input type="text" class="search-input" placeholder="Search..." id="searchInput">
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+                
+                <!-- Upload Toggle -->
+                <div class="upload-toggle me-3" id="uploadToggle">
+                    <i class="fas fa-file-upload"></i>
+                    <span>Upload</span>
+                </div>
+                
+                <!-- Bookmarks Toggle -->
+                <button class="download-btn me-3" id="bookmarksToggle" title="Bookmarks">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Bookmarks</span>
+                </button>
+                
+                <!-- Download Button -->
+                <button class="download-btn me-3" id="downloadBtn" title="Download Text">
+                    <i class="fas fa-download"></i>
+                    <span>Download</span>
+                </button>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarControls">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarControls">
+                    <!-- Speed Controls -->
+                    <div class="dropdown me-2">
+                        <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Reading Speed">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Reading Speed</h6></li>
+                            <li><a class="dropdown-item speed-option" href="#" data-speed="slow">Slow</a></li>
+                            <li><a class="dropdown-item speed-option" href="#" data-speed="normal">Normal</a></li>
+                            <li><a class="dropdown-item speed-option" href="#" data-speed="fast">Fast</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Zoom Controls -->
+                    <div class="d-flex align-items-center me-3">
+                        <button id="zoomOut" class="control-btn me-2" title="Zoom Out">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <span id="zoomLevel" class="zoom-display text-white">1.00x</span>
+                        <button id="zoomIn" class="control-btn ms-2" title="Zoom In">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <button id="themeToggle" class="control-btn me-2" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <!-- Text-to-Speech -->
+                    <button id="ttsToggle" class="control-btn me-2 tts-play-btn" title="Text-to-Speech">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button id="ttsPauseToggle" class="control-btn me-2 tts-pause-btn" title="Pause Speech">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    
+                    <!-- Blur Toggle -->
+                    <button id="blurToggle" class="control-btn me-2" title="Toggle Blur Effect">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    
+                    <!-- Line Spacing -->
+                    <div class="dropdown me-2">
+                        <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Line Spacing">
+                            <i class="fas fa-arrows-alt-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Line Spacing</h6></li>
+                            <li><a class="dropdown-item spacing-option" href="#" data-spacing="1.5">Compact</a></li>
+                            <li><a class="dropdown-item spacing-option" href="#" data-spacing="2">Normal</a></li>
+                            <li><a class="dropdown-item spacing-option" href="#" data-spacing="2.5">Relaxed</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Font Settings -->
+                    <div class="dropdown">
+                        <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Font Settings">
+                            <i class="fas fa-font"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <li><h6 class="dropdown-header">Typography</h6></li>
+                            <li>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Font Family</label>
+                                    <select class="form-select form-select-sm font-family-select">
+                                        <option value="Inter">Inter</option>
+                                        <option value="Roboto">Roboto</option>
+                                        <option value="Lora">Lora</option>
+                                        <option value="Merriweather">Merriweather</option>
+                                        <option value="Courier New">Monospace</option>
+                                    </select>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Font Size</label>
+                                    <input type="range" class="form-range font-size-range" min="0.8" max="2.4" step="0.1" value="1.1">
+                                </div>
+                            </li>
+                            <li>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Letter Spacing</label>
+                                    <input type="range" class="form-range letter-spacing-range" min="-0.5" max="2" step="0.1" value="0">
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Color Settings -->
+                    <div class="dropdown">
+                        <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Color Settings">
+                            <i class="fas fa-palette"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <li><h6 class="dropdown-header">Active Line Colors</h6></li>
+                            <li>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Background Color</label>
+                                    <div class="color-picker-container" id="bgColorPicker">
+                                        <div class="color-option selected" style="background-color: #e0e7ff;" data-color="#e0e7ff"></div>
+                                        <div class="color-option" style="background-color: #fee2e2;" data-color="#fee2e2"></div>
+                                        <div class="color-option" style="background-color: #dcfce7;" data-color="#dcfce7"></div>
+                                        <div class="color-option" style="background-color: #fef3c7;" data-color="#fef3c7"></div>
+                                        <div class="color-option" style="background-color: #ede9fe;" data-color="#ede9fe"></div>
+                                        <div class="color-option" style="background-color: #fce7f3;" data-color="#fce7f3"></div>
+                                        <div class="color-option" style="background-color: #e0f2fe;" data-color="#e0f2fe"></div>
+                                        <div class="color-option" style="background-color: #ecfccb;" data-color="#ecfccb"></div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Text Color</label>
+                                    <div class="color-picker-container" id="textColorPicker">
+                                        <div class="color-option selected" style="background-color: #4361ee;" data-color="#4361ee"></div>
+                                        <div class="color-option" style="background-color: #dc2626;" data-color="#dc2626"></div>
+                                        <div class="color-option" style="background-color: #16a34a;" data-color="#16a34a"></div>
+                                        <div class="color-option" style="background-color: #d97706;" data-color="#d97706"></div>
+                                        <div class="color-option" style="background-color: #7c3aed;" data-color="#7c3aed"></div>
+                                        <div class="color-option" style="background-color: #db2777;" data-color="#db2777"></div>
+                                        <div class="color-option" style="background-color: #0284c7;" data-color="#0284c7"></div>
+                                        <div class="color-option" style="background-color: #65a30d;" data-color="#65a30d"></div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-0">
+        <div class="file-upload-container" id="uploadContainer">
+            <label class="file-upload-label">
+                <div class="file-upload-icon">
+                    <i class="fas fa-file-upload"></i>
+                </div>
+                <h5>Upload a PDF or Text File</h5>
+                <p class="text-muted small">Drag & drop your file here or click to browse</p>
+                <input type="file" id="fileUpload" accept=".pdf,.txt" class="d-none">
+                <button class="btn btn-primary mt-2 px-4">
+                    <i class="fas fa-cloud-upload-alt me-2"></i>Select File
+                </button>
+            </label>
+            <div class="progress-container d-none" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="read-container" id="readContainer">
+            <div class="document-title d-none" id="documentTitle">
+                <i class="fas fa-file-alt"></i>
+                <span id="fileName">No document loaded</span>
+            </div>
+            <div class="text-content" id="textContent">
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-book-open fa-3x mb-3"></i>
+                    <h4>No Document Loaded</h4>
+                    <p>Upload a file to begin reading</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookmarks Panel -->
+    <div class="bookmarks-panel" id="bookmarksPanel">
+        <div class="bookmarks-header">
+            <h5 class="mb-0">Bookmarks</h5>
+            <button class="control-btn" id="closeBookmarksPanel" title="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="bookmarksList"></div>
+    </div>
+
+    <!-- Zoom notification element -->
+    <div class="zoom-notification" id="zoomNotification"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        // DOM Elements
+        const fileUpload = document.getElementById('fileUpload');
+        const textContent = document.getElementById('textContent');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const zoomInBtn = document.getElementById('zoomIn');
+        const zoomOutBtn = document.getElementById('zoomOut');
+        const zoomLevel = document.getElementById('zoomLevel');
+        const themeToggle = document.getElementById('themeToggle');
+        const ttsToggle = document.getElementById('ttsToggle');
+        const ttsPauseToggle = document.getElementById('ttsPauseToggle');
+        const blurToggle = document.getElementById('blurToggle');
+        const fontFamilySelect = document.querySelector('.font-family-select');
+        const fontSizeRange = document.querySelector('.font-size-range');
+        const letterSpacingRange = document.querySelector('.letter-spacing-range');
+        const uploadContainer = document.getElementById('uploadContainer');
+        const readContainer = document.getElementById('readContainer');
+        const uploadToggle = document.getElementById('uploadToggle');
+        const bgColorPicker = document.getElementById('bgColorPicker');
+        const textColorPicker = document.getElementById('textColorPicker');
+        const documentTitle = document.getElementById('documentTitle');
+        const fileNameDisplay = document.getElementById('fileName');
+        const zoomNotification = document.getElementById('zoomNotification');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const bookmarksToggle = document.getElementById('bookmarksToggle');
+        const bookmarksPanel = document.getElementById('bookmarksPanel');
+        const bookmarksList = document.getElementById('bookmarksList');
+        const closeBookmarksPanel = document.getElementById('closeBookmarksPanel');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // State variables
+        let currentLineIndex = 0;
+        let lines = [];
+        let currentFontSize = 1.1;
+        let isDarkMode = false;
+        let isTTSActive = false;
+        let isTTSPlaying = false;
+        let speechSynthesis = window.speechSynthesis;
+        let speechUtterance = null;
+        let isBlurActive = true;
+        let isUploadVisible = true;
+        let activeLineBgColor = '#e0e7ff';
+        let activeLineTextColor = '#4361ee';
+        let currentFileName = '';
+        let bookmarks = [];
+        let searchIndex = -1;
+        let searchMatches = [];
+        let ttsQueue = [];
+        let isPaused = false;
+
+        // Initialize the application
+        function init() {
+            setupEventListeners();
+            loadSettings();
+            updateUI();
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('focusReaderSettings')) || {};
+            
+            // Theme
+            if (settings.darkMode) {
+                isDarkMode = settings.darkMode;
+                document.body.classList.toggle('dark-mode', isDarkMode);
+                const icon = themeToggle.querySelector('i');
+                icon.classList.toggle('fa-moon', !isDarkMode);
+                icon.classList.toggle('fa-sun', isDarkMode);
+                themeToggle.title = isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+            }
+            
+            // Font size
+            if (settings.fontSize) {
+                currentFontSize = parseFloat(settings.fontSize);
+                fontSizeRange.value = currentFontSize;
+                zoomLevel.textContent = currentFontSize.toFixed(1) + 'x';
+            }
+            
+            // Font family
+            if (settings.fontFamily) {
+                fontFamilySelect.value = settings.fontFamily;
+            }
+            
+            // Letter spacing
+            if (settings.letterSpacing) {
+                letterSpacingRange.value = settings.letterSpacing;
+            }
+            
+            // Active line colors
+            if (settings.activeLineBgColor) {
+                activeLineBgColor = settings.activeLineBgColor;
+                const bgOption = bgColorPicker.querySelector(`.color-option[data-color="${activeLineBgColor}"]`);
+                if (bgOption) {
+                    bgColorPicker.querySelector('.selected').classList.remove('selected');
+                    bgOption.classList.add('selected');
+                }
+            }
+            
+            if (settings.activeLineTextColor) {
+                activeLineTextColor = settings.activeLineTextColor;
+                const textOption = textColorPicker.querySelector(`.color-option[data-color="${activeLineTextColor}"]`);
+                if (textOption) {
+                    textColorPicker.querySelector('.selected').classList.remove('selected');
+                    textOption.classList.add('selected');
+                }
+            }
+            
+            // Blur effect
+            if (settings.blurEffect !== undefined) {
+                isBlurActive = settings.blurEffect;
+                document.body.classList.toggle('no-blur', !isBlurActive);
+                const icon = blurToggle.querySelector('i');
+                if (isBlurActive) {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                    blurToggle.title = 'Disable Blur Effect';
+                } else {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    blurToggle.title = 'Enable Blur Effect';
+                }
+            }
+            
+            // Load bookmarks
+            if (settings.bookmarks) {
+                bookmarks = settings.bookmarks;
+            }
+            
+            // Load document if saved
+            if (settings.document) {
+                currentFileName = settings.document.name;
+                fileNameDisplay.textContent = currentFileName;
+                documentTitle.classList.remove('d-none');
+                displayText(settings.document.text);
+                
+                // Restore scroll position
+                if (settings.scrollPosition) {
+                    setTimeout(() => {
+                        textContent.scrollTop = settings.scrollPosition;
+                    }, 100);
+                }
+                
+                // Restore active line
+                if (settings.activeLine !== undefined) {
+                    setTimeout(() => {
+                        updateActiveLine(settings.activeLine);
+                    }, 200);
+                }
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            const settings = {
+                darkMode: isDarkMode,
+                fontSize: currentFontSize,
+                fontFamily: fontFamilySelect.value,
+                letterSpacing: letterSpacingRange.value,
+                activeLineBgColor: activeLineBgColor,
+                activeLineTextColor: activeLineTextColor,
+                blurEffect: isBlurActive,
+                bookmarks: bookmarks,
+                document: lines.length > 0 ? {
+                    name: currentFileName,
+                    text: lines.join("\n")
+                } : null,
+                scrollPosition: textContent.scrollTop,
+                activeLine: currentLineIndex
+            };
+            
+            localStorage.setItem('focusReaderSettings', JSON.stringify(settings));
+        }
+
+        // Set up all event listeners
+        function setupEventListeners() {
+            // File upload
+            fileUpload.addEventListener('change', handleFileUpload);
+            
+            // Zoom controls
+            zoomInBtn.addEventListener('click', () => adjustZoom(0.1));
+            zoomOutBtn.addEventListener('click', () => adjustZoom(-0.1));
+            
+            // Theme toggle
+            themeToggle.addEventListener('click', toggleDarkMode);
+            
+            // TTS toggle
+            ttsToggle.addEventListener('click', toggleTTS);
+            ttsPauseToggle.addEventListener('click', pauseTTS);
+            
+            // Blur toggle
+            blurToggle.addEventListener('click', toggleBlur);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', handleKeyNavigation);
+            
+            // Font controls
+            fontFamilySelect.addEventListener('change', updateFontFamily);
+            fontSizeRange.addEventListener('input', () => {
+                currentFontSize = parseFloat(fontSizeRange.value);
+                updateFontSize();
+                showZoomNotification(`Font size: ${currentFontSize.toFixed(1)}x`);
+                saveSettings();
+            });
+            letterSpacingRange.addEventListener('input', () => {
+                updateLetterSpacing();
+                saveSettings();
+            });
+            
+            // Click on text to select line
+            textContent.addEventListener('click', handleTextClick);
+            
+            // Drop file
+            document.addEventListener('dragover', preventDefault);
+            document.addEventListener('drop', handleFileDrop);
+            
+            // Upload toggle
+            uploadToggle.addEventListener('click', toggleUploadVisibility);
+            
+            // Click on file upload button
+            document.querySelector('.file-upload-label button').addEventListener('click', (e) => {
+                e.preventDefault();
+                fileUpload.click();
+            });
+            
+            // Color pickers
+            bgColorPicker.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    bgColorPicker.querySelector('.selected').classList.remove('selected');
+                    option.classList.add('selected');
+                    activeLineBgColor = option.dataset.color;
+                    updateActiveLineColors();
+                    saveSettings();
+                });
+            });
+            
+            textColorPicker.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    textColorPicker.querySelector('.selected').classList.remove('selected');
+                    option.classList.add('selected');
+                    activeLineTextColor = option.dataset.color;
+                    updateActiveLineColors();
+                    saveSettings();
+                });
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', handleSearch);
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    navigateToNextSearchResult();
+                }
+            });
+            
+            // Bookmarks
+            bookmarksToggle.addEventListener('click', toggleBookmarksPanel);
+            closeBookmarksPanel.addEventListener('click', toggleBookmarksPanel);
+            
+            // Download button
+            downloadBtn.addEventListener('click', downloadTextFile);
+            
+            // Save scroll position
+            textContent.addEventListener('scroll', () => {
+                saveSettings();
+            });
+        }
+
+        // Show zoom notification
+        function showZoomNotification(message) {
+            zoomNotification.textContent = message;
+            zoomNotification.classList.add('show');
+            
+            // Hide after 2 seconds
+            setTimeout(() => {
+                zoomNotification.classList.remove('show');
+            }, 2000);
+        }
+
+        // Update active line colors
+        function updateActiveLineColors() {
+            document.documentElement.style.setProperty('--active-line-bg', activeLineBgColor);
+            document.documentElement.style.setProperty('--active-line-color', activeLineTextColor);
+            
+            // Update the current active line to reflect changes immediately
+            const lineElements = textContent.querySelectorAll('.line');
+            if (lineElements.length > 0 && currentLineIndex >= 0) {
+                const activeLine = lineElements[currentLineIndex];
+                activeLine.style.backgroundColor = activeLineBgColor;
+                activeLine.style.color = activeLineTextColor;
+            }
+        }
+
+        // Toggle blur effect
+        function toggleBlur() {
+            isBlurActive = !isBlurActive;
+            document.body.classList.toggle('no-blur');
+            
+            const icon = blurToggle.querySelector('i');
+            if (isBlurActive) {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                blurToggle.title = 'Disable Blur Effect';
+            } else {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                blurToggle.title = 'Enable Blur Effect';
+            }
+            
+            updateTooltip(blurToggle);
+            saveSettings();
+        }
+
+        // Toggle upload section visibility
+        function toggleUploadVisibility() {
+            isUploadVisible = !isUploadVisible;
+            
+            if (isUploadVisible) {
+                uploadContainer.style.display = 'block';
+                readContainer.style.height = 'calc(100vh - 120px - 180px)';
+            } else {
+                uploadContainer.style.display = 'none';
+                readContainer.style.height = 'calc(100vh - 120px)';
+            }
+        }
+
+        // Toggle bookmarks panel
+        function toggleBookmarksPanel() {
+            if (bookmarksPanel.style.display === 'block') {
+                bookmarksPanel.style.display = 'none';
+            } else {
+                bookmarksPanel.style.display = 'block';
+                renderBookmarks();
+            }
+        }
+
+        // Render bookmarks list
+        function renderBookmarks() {
+            bookmarksList.innerHTML = '';
+            
+            if (bookmarks.length === 0) {
+                bookmarksList.innerHTML = '<p class="text-muted text-center py-3">No bookmarks yet</p>';
+                return;
+            }
+            
+            bookmarks.forEach((bookmark, index) => {
+                const bookmarkItem = document.createElement('div');
+                bookmarkItem.className = 'bookmark-item';
+                
+                const bookmarkText = document.createElement('span');
+                bookmarkText.className = 'bookmark-item-text';
+                bookmarkText.textContent = bookmark.text;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'bookmark-item-remove';
+                removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                removeBtn.title = 'Remove bookmark';
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    removeBookmark(index);
+                });
+                
+                bookmarkItem.appendChild(bookmarkText);
+                bookmarkItem.appendChild(removeBtn);
+                
+                bookmarkItem.addEventListener('click', () => {
+                    navigateToBookmark(bookmark.lineIndex);
+                    bookmarksPanel.style.display = 'none';
+                });
+                
+                bookmarksList.appendChild(bookmarkItem);
+            });
+        }
+
+        // Navigate to a bookmarked line
+        function navigateToBookmark(lineIndex) {
+            updateActiveLine(lineIndex);
+        }
+
+        // Remove a bookmark
+        function removeBookmark(index) {
+            bookmarks.splice(index, 1);
+            saveSettings();
+            renderBookmarks();
+            
+            // Update bookmark buttons in text
+            const lineElements = textContent.querySelectorAll('.line');
+            lineElements.forEach((line, i) => {
+                const bookmarkBtn = line.querySelector('.bookmark-btn');
+                if (bookmarkBtn) {
+                    bookmarkBtn.classList.toggle('bookmarked', isLineBookmarked(i));
+                }
+            });
+        }
+
+        // Check if a line is bookmarked
+        function isLineBookmarked(lineIndex) {
+            return bookmarks.some(bookmark => bookmark.lineIndex === lineIndex);
+        }
+
+        // Handle file upload
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Set the file name
+            currentFileName = file.name;
+            fileNameDisplay.textContent = currentFileName;
+            documentTitle.classList.remove('d-none');
+            
+            // Hide upload section after file is selected
+            isUploadVisible = false;
+            uploadContainer.style.display = 'none';
+            readContainer.style.height = 'calc(100vh - 120px)';
+            
+            showProgress();
+            
+            if (file.type === 'application/pdf') {
+                loadPDF(file);
+            } else if (file.type === 'text/plain') {
+                loadTextFile(file);
+            } else {
+                alert('Please upload a PDF or text file.');
+                hideProgress();
+            }
+        }
+
+        // Handle file drop
+        function handleFileDrop(event) {
+            preventDefault(event);
+            const file = event.dataTransfer.files[0];
+            if (file) {
+                fileUpload.files = event.dataTransfer.files;
+                handleFileUpload({ target: fileUpload });
+            }
+        }
+
+        // Prevent default behavior for drag and drop
+        function preventDefault(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        // Show progress bar
+        function showProgress() {
+            progressContainer.classList.remove('d-none');
+            progressBar.style.width = '0%';
+        }
+
+        // Hide progress bar
+        function hideProgress() {
+            progressContainer.classList.add('d-none');
+        }
+
+        // Load PDF file
+        function loadPDF(file) {
+            const reader = new FileReader();
+            
+            reader.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percent = (event.loaded / event.total) * 100;
+                    progressBar.style.width = `${percent}%`;
+                }
+            };
+            
+            reader.onload = () => {
+                const typedarray = new Uint8Array(reader.result);
+                
+                pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                    let textContent = "";
+                    const numPages = pdf.numPages;
+                    let pagesProcessed = 0;
+                    
+                    for (let i = 1; i <= numPages; i++) {
+                        pdf.getPage(i).then(page => {
+                            return page.getTextContent();
+                        }).then(text => {
+                            text.items.forEach(item => {
+                                textContent += item.str + (item.str.endsWith('-') ? '' : ' ');
+                            });
+                            
+                            pagesProcessed++;
+                            progressBar.style.width = `${(pagesProcessed / numPages) * 100}%`;
+                            
+                            if (pagesProcessed === numPages) {
+                                // Clean up text (remove extra spaces and handle hyphenation)
+                                textContent = textContent.replace(/\s+/g, ' ').replace(/\s+-\s+/g, '');
+                                displayText(textContent);
+                                hideProgress();
+                                saveSettings();
+                            }
+                        });
+                    }
+                }).catch(error => {
+                    console.error('PDF loading error:', error);
+                    hideProgress();
+                    alert('Error loading PDF. Please try another file.');
+                });
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Load text file
+        function loadTextFile(file) {
+            const reader = new FileReader();
+            
+            reader.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percent = (event.loaded / event.total) * 100;
+                    progressBar.style.width = `${percent}%`;
+                }
+            };
+            
+            reader.onload = () => {
+                displayText(reader.result);
+                hideProgress();
+                saveSettings();
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // Display text in the reader
+        function displayText(text) {
+            textContent.innerHTML = "";
+            
+            // Split text into sentences and meaningful chunks
+            lines = splitIntoSentences(text);
+            
+            if (lines.length === 0) {
+                textContent.innerHTML = `
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                        <h4>No Text Content Found</h4>
+                        <p>The document appears to be empty or couldn't be parsed</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            lines.forEach((line, index) => {
+                const lineElement = document.createElement('div');
+                lineElement.textContent = line;
+                lineElement.className = 'line';
+                lineElement.style.fontSize = `${currentFontSize}rem`;
+                
+                // Add bookmark button
+                const bookmarkBtn = document.createElement('button');
+                bookmarkBtn.className = 'bookmark-btn';
+                bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i>';
+                bookmarkBtn.title = 'Bookmark this line';
+                bookmarkBtn.classList.toggle('bookmarked', isLineBookmarked(index));
+                
+                bookmarkBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleBookmark(index, line);
+                });
+                
+                lineElement.appendChild(bookmarkBtn);
+                
+                if (index === 0) {
+                    lineElement.classList.add('active');
+                    lineElement.style.backgroundColor = activeLineBgColor;
+                    lineElement.style.color = activeLineTextColor;
+                }
+                textContent.appendChild(lineElement);
+            });
+            
+            currentLineIndex = 0;
+            scrollToActiveLine();
+        }
+
+        // Split text into sentences and meaningful chunks
+        function splitIntoSentences(text) {
+            // First, split by common sentence terminators
+            let sentences = text.split(/([.!?]+[\s'")\]]*)/);
+            
+            // Combine the terminators with their sentences
+            let combined = [];
+            for (let i = 0; i < sentences.length; i += 2) {
+                if (sentences[i] || sentences[i + 1]) {
+                    combined.push((sentences[i] || '') + (sentences[i + 1] || ''));
+                }
+            }
+            
+            // Further split long sentences at commas, semicolons, etc.
+            let result = [];
+            combined.forEach(sentence => {
+                if (sentence.length > 120) {
+                    // Split at natural break points
+                    const chunks = sentence.split(/([,;:]+\s)/);
+                    let temp = '';
+                    for (let i = 0; i < chunks.length; i++) {
+                        if (temp.length + chunks[i].length < 80) {
+                            temp += chunks[i];
+                        } else {
+                            if (temp) result.push(temp);
+                            temp = chunks[i];
+                        }
+                    }
+                    if (temp) result.push(temp);
+                } else {
+                    result.push(sentence);
+                }
+            });
+            
+            // Filter out empty lines and trim whitespace
+            return result.filter(line => line.trim() !== '').map(line => line.trim());
+        }
+
+        // Toggle bookmark for a line
+        function toggleBookmark(lineIndex, lineText) {
+            const existingIndex = bookmarks.findIndex(bookmark => bookmark.lineIndex === lineIndex);
+            
+            if (existingIndex >= 0) {
+                bookmarks.splice(existingIndex, 1);
+            } else {
+                bookmarks.push({
+                    lineIndex: lineIndex,
+                    text: lineText.substring(0, 50) + (lineText.length > 50 ? '...' : '')
+                });
+            }
+            
+            // Update bookmark button
+            const lineElements = textContent.querySelectorAll('.line');
+            const bookmarkBtn = lineElements[lineIndex].querySelector('.bookmark-btn');
+            bookmarkBtn.classList.toggle('bookmarked', isLineBookmarked(lineIndex));
+            
+            saveSettings();
+            
+            // If bookmarks panel is open, update it
+            if (bookmarksPanel.style.display === 'block') {
+                renderBookmarks();
+            }
+        }
+
+        // Handle search input
+        function handleSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (searchTerm === '') {
+                searchResults.style.display = 'none';
+                searchMatches = [];
+                searchIndex = -1;
+                removeSearchHighlights();
+                return;
+            }
+            
+            searchMatches = [];
+            const lineElements = textContent.querySelectorAll('.line');
+            
+            lineElements.forEach((lineElement, index) => {
+                const text = lineElement.textContent.toLowerCase();
+                const position = text.indexOf(searchTerm);
+                
+                if (position >= 0) {
+                    searchMatches.push(index);
+                    
+                    // Highlight the match
+                    const lineText = lineElement.textContent;
+                    const highlightedText = lineText.substring(0, position) + 
+                        '<span class="search-result-highlight">' + 
+                        lineText.substring(position, position + searchTerm.length) + 
+                        '</span>' + 
+                        lineText.substring(position + searchTerm.length);
+                    
+                    lineElement.innerHTML = highlightedText + lineElement.innerHTML.substring(lineElement.innerHTML.indexOf('</span>') + 7);
+                    
+                    // Re-add bookmark button
+                    const bookmarkBtn = document.createElement('button');
+                    bookmarkBtn.className = 'bookmark-btn';
+                    bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i>';
+                    bookmarkBtn.title = 'Bookmark this line';
+                    bookmarkBtn.classList.toggle('bookmarked', isLineBookmarked(index));
+                    bookmarkBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        toggleBookmark(index, lines[index]);
+                    });
+                    lineElement.appendChild(bookmarkBtn);
+                }
+            });
+            
+            if (searchMatches.length > 0) {
+                searchResults.innerHTML = '';
+                searchMatches.forEach((matchIndex, resultIndex) => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.textContent = lines[matchIndex].substring(0, 100) + (lines[matchIndex].length > 100 ? '...' : '');
+                    resultItem.addEventListener('click', () => {
+                        updateActiveLine(matchIndex);
+                        searchIndex = resultIndex;
+                        searchResults.style.display = 'none';
+                    });
+                    searchResults.appendChild(resultItem);
+                });
+                
+                searchResults.style.display = 'block';
+                searchIndex = -1;
+            } else {
+                searchResults.innerHTML = '<div class="search-result-item">No matches found</div>';
+                searchResults.style.display = 'block';
+            }
+        }
+
+        // Remove search highlights
+        function removeSearchHighlights() {
+            const lineElements = textContent.querySelectorAll('.line');
+            lineElements.forEach((lineElement, index) => {
+                lineElement.textContent = lines[index];
+                
+                // Re-add bookmark button
+                const bookmarkBtn = document.createElement('button');
+                bookmarkBtn.className = 'bookmark-btn';
+                bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i>';
+                bookmarkBtn.title = 'Bookmark this line';
+                bookmarkBtn.classList.toggle('bookmarked', isLineBookmarked(index));
+                bookmarkBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleBookmark(index, lines[index]);
+                });
+                lineElement.appendChild(bookmarkBtn);
+            });
+        }
+
+        // Navigate to next search result
+        function navigateToNextSearchResult() {
+            if (searchMatches.length === 0) return;
+            
+            searchIndex = (searchIndex + 1) % searchMatches.length;
+            updateActiveLine(searchMatches[searchIndex]);
+        }
+
+        // Handle keyboard navigation
+        function handleKeyNavigation(event) {
+            if (lines.length === 0) return;
+            
+            switch (event.key) {
+                case 'ArrowDown':
+                    if (currentLineIndex < lines.length - 1) {
+                        updateActiveLine(currentLineIndex + 1);
+                        event.preventDefault();
+                    }
+                    break;
+                case 'ArrowUp':
+                    if (currentLineIndex > 0) {
+                        updateActiveLine(currentLineIndex - 1);
+                        event.preventDefault();
+                    }
+                    break;
+                case ' ':
+                    if (isTTSActive) {
+                        if (isTTSPlaying) {
+                            pauseTTS();
+                        } else {
+                            toggleTTS();
+                        }
+                    }
+                    break;
+                case 'f':
+                    if (event.ctrlKey) {
+                        event.preventDefault();
+                        searchInput.focus();
+                    }
+                    break;
+                case 'Enter':
+                    if (document.activeElement === searchInput) {
+                        navigateToNextSearchResult();
+                    }
+                    break;
+                case 'Escape':
+                    if (document.activeElement === searchInput) {
+                        searchInput.value = '';
+                        handleSearch();
+                    }
+                    break;
+            }
+        }
+
+        // Handle text click to select line
+        function handleTextClick(event) {
+            if (event.target.classList.contains('line')) {
+                const clickedLine = event.target;
+                const lineElements = Array.from(textContent.querySelectorAll('.line'));
+                const index = lineElements.indexOf(clickedLine);
+                
+                if (index !== -1) {
+                    updateActiveLine(index);
+                }
+            }
+        }
+
+        // Update the active line
+        function updateActiveLine(newIndex) {
+            if (newIndex < 0 || newIndex >= lines.length) return;
+            
+            const lineElements = textContent.querySelectorAll('.line');
+            lineElements[currentLineIndex].classList.remove('active');
+            currentLineIndex = newIndex;
+            const activeLine = lineElements[currentLineIndex];
+            activeLine.classList.add('active');
+            activeLine.style.backgroundColor = activeLineBgColor;
+            activeLine.style.color = activeLineTextColor;
+            
+            scrollToActiveLine();
+            
+            if (isTTSActive && !isPaused) {
+                speakCurrentLine();
+            }
+            
+            saveSettings();
+        }
+
+        // Scroll to keep active line in view
+        function scrollToActiveLine() {
+            const lineElements = textContent.querySelectorAll('.line');
+            if (lineElements.length === 0) return;
+            
+            const activeLine = lineElements[currentLineIndex];
+            const containerHeight = textContent.clientHeight;
+            const linePosition = activeLine.offsetTop - textContent.offsetTop;
+            const scrollPosition = linePosition - (containerHeight / 2) + (activeLine.clientHeight / 2);
+            
+            textContent.scrollTo({
+                top: scrollPosition,
+                behavior: 'smooth'
+            });
+        }
+
+        // Adjust zoom level
+        function adjustZoom(change) {
+            const newFontSize = Math.max(0.8, Math.min(2.4, currentFontSize + change));
+            if (newFontSize !== currentFontSize) {
+                currentFontSize = newFontSize;
+                updateFontSize();
+                fontSizeRange.value = currentFontSize;
+                
+                // Show notification with change amount
+                const changeType = change > 0 ? '+' : '';
+                showZoomNotification(`Font size ${changeType}${change.toFixed(1)} (${currentFontSize.toFixed(1)}x)`);
+                
+                // Adjust line wrapping when zooming out
+                const lineElements = textContent.querySelectorAll('.line');
+                lineElements.forEach(line => {
+                    if (currentFontSize < 1.0) {
+                        line.style.maxWidth = 'none';
+                        line.style.whiteSpace = 'pre-wrap';
+                    } else {
+                        line.style.maxWidth = '';
+                        line.style.whiteSpace = '';
+                    }
+                });
+                
+                saveSettings();
+            }
+        }
+
+        // Update font size based on currentFontSize
+        function updateFontSize() {
+            const lineElements = textContent.querySelectorAll('.line');
+            lineElements.forEach(line => {
+                line.style.fontSize = `${currentFontSize}rem`;
+            });
+            
+            zoomLevel.textContent = currentFontSize.toFixed(1) + 'x';
+        }
+
+        // Update font family
+        function updateFontFamily() {
+            const fontFamily = fontFamilySelect.value;
+            const lineElements = textContent.querySelectorAll('.line');
+            
+            lineElements.forEach(line => {
+                line.style.fontFamily = fontFamily === 'Courier New' ? 
+                    'Courier New, monospace' : 
+                    `${fontFamily}, sans-serif`;
+            });
+            
+            // Load Google Font if needed
+            if (fontFamily !== 'Courier New') {
+                loadGoogleFont(fontFamily);
+            }
+            
+            saveSettings();
+        }
+
+        // Update letter spacing
+        function updateLetterSpacing() {
+            const spacing = letterSpacingRange.value + 'px';
+            const lineElements = textContent.querySelectorAll('.line');
+            
+            lineElements.forEach(line => {
+                line.style.letterSpacing = spacing;
+            });
+        }
+
+        // Load Google Font dynamically
+        function loadGoogleFont(fontFamily) {
+            const linkId = 'google-font-' + fontFamily.replace(/\s+/g, '-').toLowerCase();
+            
+            if (!document.getElementById(linkId)) {
+                const link = document.createElement('link');
+                link.id = linkId;
+                link.rel = 'stylesheet';
+                link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}&display=swap`;
+                document.head.appendChild(link);
+            }
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode');
+            
+            const icon = themeToggle.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+            
+            themeToggle.title = isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+            updateTooltip(themeToggle);
+            saveSettings();
+        }
+
+        // Toggle text-to-speech
+        function toggleTTS() {
+            isTTSActive = !isTTSActive;
+            isTTSPlaying = isTTSActive;
+            isPaused = false;
+            
+            if (isTTSActive) {
+                document.body.classList.add('tts-playing');
+                speakCurrentLine();
+            } else {
+                document.body.classList.remove('tts-playing');
+                speechSynthesis.cancel();
+            }
+            
+            updateTooltip(ttsToggle);
+        }
+
+        // Pause text-to-speech
+        function pauseTTS() {
+            if (!isTTSActive) return;
+            
+            if (isPaused) {
+                // Resume
+                isPaused = false;
+                isTTSPlaying = true;
+                ttsPauseToggle.title = 'Pause Speech';
+                speechSynthesis.resume();
+                speakCurrentLine();
+            } else {
+                // Pause
+                isPaused = true;
+                isTTSPlaying = false;
+                ttsPauseToggle.title = 'Resume Speech';
+                speechSynthesis.pause();
+            }
+            
+            updateTooltip(ttsPauseToggle);
+        }
+
+        // Speak the current line
+        function speakCurrentLine() {
+            if (!isTTSActive || isPaused || lines.length === 0) return;
+            
+            speechSynthesis.cancel();
+            
+            // Get the current line and next few lines for context
+            let textToSpeak = lines[currentLineIndex];
+            
+            // Add a small pause after certain punctuation
+            textToSpeak = textToSpeak.replace(/([.!?;:])/g, '$1 ');
+            
+            speechUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            // Set a natural rate and pitch
+            speechUtterance.rate = 1;
+            speechUtterance.pitch = 1;
+            
+            speechUtterance.onend = () => {
+                if (!isPaused && currentLineIndex < lines.length - 1) {
+                    setTimeout(() => {
+                        updateActiveLine(currentLineIndex + 1);
+                    }, 300);
+                } else if (currentLineIndex >= lines.length - 1) {
+                    // Reached end of document
+                    isTTSActive = false;
+                    isTTSPlaying = false;
+                    document.body.classList.remove('tts-playing');
+                }
+            };
+            
+            speechUtterance.onerror = (event) => {
+                console.error('SpeechSynthesis error:', event);
+            };
+            
+            speechSynthesis.speak(speechUtterance);
+        }
+
+        // Download text as file
+        function downloadTextFile() {
+            if (lines.length === 0) {
+                alert('No document loaded to download.');
+                return;
+            }
+            
+            const textContent = lines.join("\n");
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFileName ? currentFileName.replace(/\.[^/.]+$/, '') + '.txt' : 'document.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Update Bootstrap tooltip
+        function updateTooltip(element) {
+            const tooltip = bootstrap.Tooltip.getInstance(element);
+            if (tooltip) {
+                tooltip.setContent({ '.tooltip-inner': element.title });
+            }
+        }
+
+        // Update UI elements
+        function updateUI() {
+            updateFontSize();
+            updateFontFamily();
+            updateLetterSpacing();
+            updateActiveLineColors();
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            init();
+        });
+    </script>
+</body>
+</html>
