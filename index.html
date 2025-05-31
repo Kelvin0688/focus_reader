@@ -62,9 +62,33 @@
             margin: 0.5rem 0;
         }
 
+        /* Word Mode Styles */
+        body.word-mode .line {
+            color: transparent !important;
+            background-color: transparent !important;
+        }
+
+        body.word-mode .line.active span {
+            color: transparent !important;
+        }
+
+        body.word-mode .line.active span.word-highlight {
+            color: var(--active-text-color) !important;
+            background-color: var(--cover-color) !important;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 0 2px;
+            border-radius: 4px;
+        }
+
         .navbar-brand {
             font-weight: 700;
             letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand .logo-text {
+            margin-left: 0.5rem;
         }
 
         .read-container {
@@ -297,6 +321,7 @@
             flex-direction: column;
             align-items: center;
             transition: all 0.2s ease;
+            min-width: 50px;
         }
 
         .bottom-nav-btn:hover {
@@ -521,6 +546,91 @@
             border-color: #e2e8f0;
         }
 
+        /* Preset Cover Buttons */
+        .preset-cover-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .preset-cover-btn {
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .preset-cover-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Zoom Slider */
+        .zoom-slider-container {
+            padding: 0.5rem 1rem;
+            width: 200px;
+        }
+
+        .zoom-slider {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        /* Line Spacing Slider */
+        .spacing-slider-container {
+            padding: 0.5rem 1rem;
+            width: 200px;
+        }
+
+        .spacing-slider {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        /* Mobile Navigation Buttons */
+        .mobile-nav-btn {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0.9;
+            transition: all 0.3s ease;
+            display: none;
+            border: none;
+        }
+
+        .mobile-nav-btn:hover {
+            opacity: 1;
+            transform: translateX(-50%) scale(1.05);
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .mobile-nav-btn.up {
+            top: 80px;
+        }
+
+        .mobile-nav-btn.down {
+            bottom: 80px;
+        }
+
+        /* Responsive Styles */
         @media (max-width: 992px) {
             .navbar-collapse {
                 position: fixed;
@@ -571,8 +681,12 @@
             }
         }
 
-        @media (max-width: 576px) {
-            .navbar-brand span {
+        @media (max-width: 768px) {
+            .mobile-nav-btn {
+                display: flex;
+            }
+            
+            .navbar-brand .logo-text {
                 display: none;
             }
             
@@ -586,6 +700,98 @@
             
             .bottom-nav-btn {
                 padding: 0.5rem;
+                min-width: auto;
+            }
+
+            .preset-cover-btn {
+                min-width: 60px;
+                font-size: 0.65rem;
+                padding: 0.3rem;
+            }
+            
+            .read-container {
+                height: calc(100vh - 160px);
+            }
+            
+            .text-content {
+                padding: 1rem;
+            }
+            
+            .document-title {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .file-upload-container {
+                padding: 1rem;
+            }
+            
+            .file-upload-icon {
+                font-size: 2rem;
+            }
+            
+            .navbar-collapse {
+                top: 50px;
+            }
+            
+            /* iPhone-like bottom nav */
+            .bottom-nav {
+                justify-content: space-evenly;
+                padding: 0.5rem 0;
+            }
+            
+            .bottom-nav-btn {
+                flex: 1;
+                max-width: 60px;
+                padding: 0.5rem;
+            }
+            
+            .bottom-nav-btn i {
+                margin-bottom: 0;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .mobile-nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .mobile-nav-btn.up {
+                top: 70px;
+            }
+            
+            .mobile-nav-btn.down {
+                bottom: 70px;
+            }
+            
+            .read-container {
+                height: calc(100vh - 140px);
+            }
+            
+            .text-content {
+                padding: 0.75rem;
+            }
+            
+            .bottom-nav-btn i {
+                margin-bottom: 0;
+                font-size: 1rem;
+            }
+            
+            .bottom-nav {
+                padding: 0.25rem;
+            }
+            
+            .navbar-brand {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .navbar-brand .logo-text {
+                display: inline-block;
             }
         }
     </style>
@@ -594,8 +800,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
         <div class="container-fluid">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="fas fa-book-reader me-2"></i>
-                <span>Focus Reader</span>
+                <i class="fas fa-book-reader me-1"></i>
+                <span class="logo-text">Focus Reader</span>
             </a>
             
             <div class="d-flex align-items-center">
@@ -674,11 +880,35 @@
                             <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Line Spacing">
                                 <i class="fas fa-arrows-alt-v"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end p-3">
                                 <li><h6 class="dropdown-header">Line Spacing</h6></li>
-                                <li><a class="dropdown-item spacing-option" href="#" data-spacing="1.5">Compact</a></li>
-                                <li><a class="dropdown-item spacing-option" href="#" data-spacing="1.8">Normal</a></li>
-                                <li><a class="dropdown-item spacing-option" href="#" data-spacing="2.2">Relaxed</a></li>
+                                <li>
+                                    <div class="spacing-slider-container">
+                                        <input type="range" class="spacing-slider" min="1.2" max="3" step="0.1" value="1.8">
+                                        <div class="d-flex justify-content-between small">
+                                            <span>Tight</span>
+                                            <span>Loose</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="nav-item dropdown">
+                            <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Font Size">
+                                <i class="fas fa-text-height"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end p-3">
+                                <li><h6 class="dropdown-header">Font Size</h6></li>
+                                <li>
+                                    <div class="zoom-slider-container">
+                                        <input type="range" class="zoom-slider" min="0.8" max="10" step="0.1" value="1.1">
+                                        <div class="d-flex justify-content-between small">
+                                            <span>Small</span>
+                                            <span>Large</span>
+                                        </div>
+                                    </div>
+                                </li>
                             </ul>
                         </li>
                         
@@ -687,7 +917,18 @@
                                 <i class="fas fa-palette"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
-                                <li><h6 class="dropdown-header">Active Line Colors</h6></li>
+                                <li><h6 class="dropdown-header">Preset Color Combinations</h6></li>
+                                <li>
+                                    <div class="preset-cover-buttons">
+                                        <button class="preset-cover-btn" style="background: #000; color: #4361ee;" data-bg="#000" data-text="#4361ee">Black/Blue</button>
+                                        <button class="preset-cover-btn" style="background: #fff; color: #4361ee;" data-bg="#fff" data-text="#4361ee">White/Blue</button>
+                                        <button class="preset-cover-btn" style="background: #ffff00; color: #000;" data-bg="#ffff00" data-text="#000">Yellow/Black</button>
+                                        <button class="preset-cover-btn" style="background: #1e293b; color: #fff;" data-bg="#1e293b" data-text="#fff">Dark/White</button>
+                                        <button class="preset-cover-btn" style="background: #f8fafc; color: #000;" data-bg="#f8fafc" data-text="#000">Light/Black</button>
+                                        <button class="preset-cover-btn" style="background: #000; color: #fff;" data-bg="#000" data-text="#fff">Black/White</button>
+                                    </div>
+                                </li>
+                                <li><h6 class="dropdown-header">Custom Colors</h6></li>
                                 <li>
                                     <div class="mb-2">
                                         <label class="form-label small mb-1">Background Color</label>
@@ -714,6 +955,7 @@
                                             <div class="color-option" style="background-color: #8b5cf6;" data-color="#8b5cf6"></div>
                                             <div class="color-option" style="background-color: #ec4899;" data-color="#ec4899"></div>
                                             <div class="color-option" style="background-color: #0ea5e9;" data-color="#0ea5e9"></div>
+                                            <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
                                             <div class="color-option" style="background-color: #000000;" data-color="#000000"></div>
                                         </div>
                                     </div>
@@ -782,6 +1024,14 @@
             </button>
         </div>
     </div>
+
+    <!-- Mobile Navigation Buttons -->
+    <button class="mobile-nav-btn up" id="mobileUpBtn">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+    <button class="mobile-nav-btn down" id="mobileDownBtn">
+        <i class="fas fa-chevron-down"></i>
+    </button>
 
     <div class="bottom-nav">
         <button class="bottom-nav-btn" id="bottomZoomOut">
@@ -883,6 +1133,11 @@
         const addBookmarkBtn = document.getElementById('addBookmarkBtn');
         const bottomSearchToggle = document.getElementById('bottomSearchToggle');
         const bottomBookmarkToggle = document.getElementById('bottomBookmarkToggle');
+        const zoomSlider = document.querySelector('.zoom-slider');
+        const spacingSlider = document.querySelector('.spacing-slider');
+        const presetCoverButtons = document.querySelectorAll('.preset-cover-btn');
+        const mobileUpBtn = document.getElementById('mobileUpBtn');
+        const mobileDownBtn = document.getElementById('mobileDownBtn');
 
         // State variables
         let currentLineIndex = 0;
@@ -931,11 +1186,13 @@
             if (settings.fontSize) {
                 currentFontSize = parseFloat(settings.fontSize);
                 zoomLevel.textContent = currentFontSize.toFixed(1) + 'x';
+                zoomSlider.value = currentFontSize;
             }
             
             if (settings.lineSpacing) {
                 lineSpacing = parseFloat(settings.lineSpacing);
                 document.documentElement.style.setProperty('--line-spacing', lineSpacing);
+                spacingSlider.value = lineSpacing;
             }
             
             if (settings.activeLineBgColor) {
@@ -1003,9 +1260,11 @@
                 if (isWordMode) {
                     icon.classList.add('fa-underline');
                     wordModeToggle.title = 'Disable Word-by-Word';
+                    document.body.classList.add('word-mode');
                 } else {
                     icon.classList.remove('fa-underline');
                     wordModeToggle.title = 'Enable Word-by-Word';
+                    document.body.classList.remove('word-mode');
                 }
             }
             
@@ -1154,11 +1413,66 @@
                 });
             });
             
-            document.querySelectorAll('.spacing-option').forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    lineSpacing = parseFloat(option.dataset.spacing);
+            zoomSlider.addEventListener('input', (e) => {
+                const newFontSize = parseFloat(e.target.value);
+                if (newFontSize !== currentFontSize) {
+                    currentFontSize = newFontSize;
+                    updateFontSize();
+                    saveSettings();
+                }
+            });
+            
+            spacingSlider.addEventListener('input', (e) => {
+                const newSpacing = parseFloat(e.target.value);
+                if (newSpacing !== lineSpacing) {
+                    lineSpacing = newSpacing;
                     document.documentElement.style.setProperty('--line-spacing', lineSpacing);
+                    saveSettings();
+                }
+            });
+            
+            presetCoverButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const bgColor = button.dataset.bg;
+                    const textColor = button.dataset.text;
+                    
+                    // Update cover color
+                    coverColor = bgColor;
+                    document.documentElement.style.setProperty('--cover-color', coverColor);
+                    
+                    // Update text color
+                    activeTextColor = textColor;
+                    document.documentElement.style.setProperty('--active-text-color', activeTextColor);
+                    
+                    // Update UI immediately
+                    const lineElements = textContent.querySelectorAll('.line');
+                    if (lineElements.length > 0 && currentLineIndex >= 0) {
+                        const activeLine = lineElements[currentLineIndex];
+                        if (isWordMode) {
+                            const wordSpans = activeLine.querySelectorAll('span');
+                            wordSpans.forEach(span => {
+                                if (span.classList.contains('word-highlight')) {
+                                    span.style.color = activeTextColor;
+                                }
+                            });
+                        } else {
+                            activeLine.style.color = activeTextColor;
+                        }
+                    }
+                    
+                    // Update color pickers
+                    const coverOption = coverColorPicker.querySelector(`.cover-color-option[data-color="${coverColor}"]`);
+                    if (coverOption) {
+                        coverColorPicker.querySelector('.selected').classList.remove('selected');
+                        coverOption.classList.add('selected');
+                    }
+                    
+                    const textOption = textColorPicker.querySelector(`.color-option[data-color="${activeTextColor}"]`);
+                    if (textOption) {
+                        textColorPicker.querySelector('.selected').classList.remove('selected');
+                        textOption.classList.add('selected');
+                    }
+                    
                     saveSettings();
                 });
             });
@@ -1180,6 +1494,27 @@
             bookmarkToggle.addEventListener('click', toggleBookmarksPanel);
             bottomBookmarkToggle.addEventListener('click', toggleBookmarksPanel);
             addBookmarkBtn.addEventListener('click', addBookmark);
+            
+            // Mobile navigation buttons
+            mobileUpBtn.addEventListener('click', () => {
+                if (isWordMode) {
+                    navigateWords('prev');
+                } else {
+                    if (currentLineIndex > 0) {
+                        updateActiveLine(currentLineIndex - 1);
+                    }
+                }
+            });
+            
+            mobileDownBtn.addEventListener('click', () => {
+                if (isWordMode) {
+                    navigateWords('next');
+                } else {
+                    if (currentLineIndex < lines.length - 1) {
+                        updateActiveLine(currentLineIndex + 1);
+                    }
+                }
+            });
         }
 
         // Toggle solid cover effect
@@ -1366,6 +1701,8 @@
         // Toggle word-by-word mode
         function toggleWordMode() {
             isWordMode = !isWordMode;
+            document.body.classList.toggle('word-mode');
+            
             const icon = wordModeToggle.querySelector('i');
             const bottomIcon = bottomWordModeToggle.querySelector('i');
             
@@ -1753,35 +2090,62 @@
 
         // Split text into sentences and meaningful chunks
         function splitIntoSentences(text) {
-            let sentences = text.split(/([.!?]+[\s'")\]]*)/);
-            
-            let combined = [];
-            for (let i = 0; i < sentences.length; i += 2) {
-                if (sentences[i] || sentences[i + 1]) {
-                    combined.push((sentences[i] || '') + (sentences[i + 1] || ''));
-                }
-            }
+            // First, split by paragraphs
+            let paragraphs = text.split(/\n\s*\n/);
             
             let result = [];
-            combined.forEach(sentence => {
-                if (sentence.length > 120) {
-                    const chunks = sentence.split(/([,;:]+\s)/);
-                    let temp = '';
-                    for (let i = 0; i < chunks.length; i++) {
-                        if (temp.length + chunks[i].length < 80) {
-                            temp += chunks[i];
+            
+            paragraphs.forEach(paragraph => {
+                // Clean up the paragraph
+                paragraph = paragraph.trim().replace(/\s+/g, ' ');
+                
+                if (paragraph.length === 0) return;
+                
+                // If paragraph is short enough, add it as is
+                if (paragraph.length < 120) {
+                    result.push(paragraph);
+                    return;
+                }
+                
+                // Otherwise, split into sentences
+                let sentences = paragraph.split(/([.!?]+[\s'")\]]*)/);
+                
+                let combined = [];
+                for (let i = 0; i < sentences.length; i += 2) {
+                    if (sentences[i] || sentences[i + 1]) {
+                        combined.push((sentences[i] || '') + (sentences[i + 1] || ''));
+                    }
+                }
+                
+                // Process each sentence
+                combined.forEach(sentence => {
+                    sentence = sentence.trim();
+                    if (sentence.length === 0) return;
+                    
+                    // If sentence is short enough, add it as is
+                    if (sentence.length < 120) {
+                        result.push(sentence);
+                        return;
+                    }
+                    
+                    // Otherwise, split by clauses
+                    let clauses = sentence.split(/([,;:]+\s)/);
+                    let currentChunk = '';
+                    
+                    for (let i = 0; i < clauses.length; i++) {
+                        if (currentChunk.length + clauses[i].length < 80) {
+                            currentChunk += clauses[i];
                         } else {
-                            if (temp) result.push(temp);
-                            temp = chunks[i];
+                            if (currentChunk) result.push(currentChunk.trim());
+                            currentChunk = clauses[i];
                         }
                     }
-                    if (temp) result.push(temp);
-                } else {
-                    result.push(sentence);
-                }
+                    
+                    if (currentChunk) result.push(currentChunk.trim());
+                });
             });
             
-            return result.filter(line => line.trim() !== '').map(line => line.trim());
+            return result.filter(line => line.trim() !== '');
         }
 
         // Handle keyboard navigation
@@ -1943,10 +2307,11 @@
 
         // Adjust zoom level
         function adjustZoom(change) {
-            const newFontSize = Math.max(0.8, Math.min(2.4, currentFontSize + change));
+            const newFontSize = Math.max(0.8, Math.min(10.0, currentFontSize + change));
             if (newFontSize !== currentFontSize) {
                 currentFontSize = newFontSize;
                 updateFontSize();
+                zoomSlider.value = currentFontSize;
                 
                 const changeType = change > 0 ? '+' : '';
                 showZoomNotification(`Font size ${changeType}${change.toFixed(1)} (${currentFontSize.toFixed(1)}x)`);
