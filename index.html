@@ -191,6 +191,7 @@
             border-radius: 8px;
             padding: 0.5rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
         }
 
         body.dark-mode .dropdown-menu {
@@ -246,7 +247,7 @@
 
         .progress-container {
             height: 6px;
-            background: #e2e8f0;
+            background: #e2e8f3;
             border-radius: 3px;
             margin-top: 1rem;
             overflow: hidden;
@@ -592,6 +593,8 @@
         .mobile-bottom-nav-container {
             display: inline-flex;
             padding: 0 15px;
+            justify-content: space-evenly;
+            width: 100%;
         }
 
         .mobile-nav-item {
@@ -599,7 +602,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 70px;
+            min-width: 60px;
             padding: 5px 10px;
             color: var(--text-primary);
             text-decoration: none;
@@ -614,7 +617,7 @@
         }
 
         .mobile-nav-item i {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             margin-bottom: 5px;
             color: var(--primary-color);
         }
@@ -666,6 +669,22 @@
 
         .mobile-nav-handle.active i {
             transform: rotate(180deg);
+        }
+
+        /* Mobile Settings Panel */
+        @media (max-width: 992px) {
+            .dropdown-menu.show {
+                display: block !important;
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 400px;
+                z-index: 2000;
+                max-height: 60vh;
+                overflow-y: auto;
+            }
         }
 
         /* Responsive Styles */
@@ -748,13 +767,13 @@
             }
             
             .mobile-nav-item {
-                min-width: 65px;
+                min-width: 55px;
                 padding: 5px 8px;
                 font-size: 0.7rem;
             }
             
             .mobile-nav-item i {
-                font-size: 1.2rem;
+                font-size: 1.4rem;
             }
         }
 
@@ -778,13 +797,13 @@
             }
             
             .mobile-nav-item {
-                min-width: 60px;
+                min-width: 50px;
                 padding: 5px;
                 font-size: 0.65rem;
             }
             
             .mobile-nav-item i {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
             
             .mobile-nav-handle {
@@ -796,6 +815,23 @@
         @media (min-width: 769px) {
             .navbar-brand .logo-text {
                 display: inline-block;
+            }
+            
+            .navbar-nav {
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;
+                width: 100%;
+            }
+            
+            .nav-item {
+                margin: 0 5px;
+            }
+            
+            .control-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -917,8 +953,8 @@
                         </li>
                         
                         <li class="nav-item dropdown">
-                            <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Color Settings">
-                                <i class="fas fa-palette"></i>
+                            <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Settings">
+                                <i class="fas fa-cog"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
                                 <li><h6 class="dropdown-header">Preset Color Combinations</h6></li>
@@ -1079,6 +1115,10 @@
                 <i class="fas fa-bookmark"></i>
                 <span class="label">Bookmarks</span>
             </a>
+            <a href="#" class="mobile-nav-item" id="mobileSettingsToggle">
+                <i class="fas fa-cog"></i>
+                <span class="label">Settings</span>
+            </a>
             <a href="#" class="mobile-nav-item" id="mobileUploadToggle">
                 <i class="fas fa-file-upload"></i>
                 <span class="label">Upload</span>
@@ -1160,6 +1200,7 @@
         const mobileSearchToggle = document.getElementById('mobileSearchToggle');
         const mobileBookmarkToggle = document.getElementById('mobileBookmarkToggle');
         const mobileUploadToggle = document.getElementById('mobileUploadToggle');
+        const mobileSettingsToggle = document.getElementById('mobileSettingsToggle');
 
         // State variables
         let currentLineIndex = 0;
@@ -1662,6 +1703,9 @@
             // Mobile nav handle
             mobileNavHandle.addEventListener('click', toggleMobileNav);
             
+            // Mobile settings toggle
+            mobileSettingsToggle.addEventListener('click', toggleSettingsPanel);
+            
             // Initialize touch events for mobile nav
             let startY = 0;
             let currentY = 0;
@@ -1698,6 +1742,27 @@
             }, { passive: true });
         }
 
+        // Toggle settings panel on mobile
+        function toggleSettingsPanel() {
+            const settingsPanel = document.querySelector('.dropdown-menu');
+            if (settingsPanel.style.display === 'block') {
+                settingsPanel.style.display = 'none';
+            } else {
+                settingsPanel.style.display = 'block';
+                settingsPanel.style.position = 'fixed';
+                settingsPanel.style.bottom = '80px';
+                settingsPanel.style.left = '50%';
+                settingsPanel.style.transform = 'translateX(-50%)';
+                settingsPanel.style.width = '90%';
+                settingsPanel.style.maxWidth = '400px';
+                settingsPanel.style.zIndex = '2000';
+                
+                // Hide other panels
+                searchContainer.style.display = 'none';
+                bookmarksPanel.style.display = 'none';
+            }
+        }
+
         // Toggle mobile nav visibility
         function toggleMobileNav() {
             if (isMobileNavVisible) {
@@ -1719,6 +1784,7 @@
             mobileBottomNav.style.transform = 'translateY(100%)';
             mobileNavHandle.classList.remove('active');
             isMobileNavVisible = false;
+            document.querySelector('.dropdown-menu').style.display = 'none';
         }
 
         // Toggle solid cover effect
@@ -1737,6 +1803,7 @@
                 searchContainer.style.display = 'block';
                 searchInput.focus();
                 bookmarksPanel.style.display = 'none';
+                document.querySelector('.dropdown-menu').style.display = 'none';
             }
         }
 
@@ -1795,6 +1862,7 @@
             } else {
                 bookmarksPanel.style.display = 'block';
                 searchContainer.style.display = 'none';
+                document.querySelector('.dropdown-menu').style.display = 'none';
             }
         }
 
@@ -2612,6 +2680,7 @@
             
             init();
         });
+        
     </script>
 </body>
 </html>
