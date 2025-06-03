@@ -23,6 +23,7 @@
             --active-line-bg: var(--primary-light);
             --active-line-color: var(--primary-color);
             --line-spacing: 1.8;
+            --letter-spacing: 0;
             --cover-color: #000000;
         }
 
@@ -60,6 +61,7 @@
             padding: 0.5rem;
             border-radius: 4px;
             margin: 0.5rem 0;
+            letter-spacing: var(--letter-spacing);
         }
 
         /* Word Mode Styles */
@@ -78,6 +80,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             padding: 0 2px;
             border-radius: 4px;
+            letter-spacing: var(--letter-spacing);
         }
 
         .navbar-brand {
@@ -148,6 +151,7 @@
             transform: scale(1.02);
             z-index: 2;
             position: relative;
+            letter-spacing: var(--letter-spacing);
         }
 
         .word-highlight {
@@ -156,6 +160,7 @@
             background-color: rgba(67, 97, 238, 0.2);
             padding: 0 2px;
             border-radius: 3px;
+            letter-spacing: var(--letter-spacing);
         }
 
         body.dark-mode .word-highlight {
@@ -528,6 +533,17 @@
         }
 
         .spacing-slider {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        /* Letter Spacing Slider */
+        .letter-spacing-slider-container {
+            padding: 0.5rem 1rem;
+            width: 200px;
+        }
+
+        .letter-spacing-slider {
             width: 100%;
             margin: 0.5rem 0;
         }
@@ -954,6 +970,24 @@
                         </li>
                         
                         <li class="nav-item dropdown">
+                            <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Letter Spacing">
+                                <i class="fas fa-text-width"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end p-3">
+                                <li><h6 class="dropdown-header">Letter Spacing</h6></li>
+                                <li>
+                                    <div class="letter-spacing-slider-container">
+                                        <input type="range" class="letter-spacing-slider" min="0" max="0.5" step="0.01" value="0">
+                                        <div class="d-flex justify-content-between small">
+                                            <span>Tight</span>
+                                            <span>Wide</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="nav-item dropdown">
                             <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Font Size">
                                 <i class="fas fa-text-height"></i>
                             </button>
@@ -985,6 +1019,10 @@
                                         <button class="preset-cover-btn" style="background: #1e293b; color: #fff;" data-bg="#1e293b" data-text="#fff">Dark/White</button>
                                         <button class="preset-cover-btn" style="background: #f8fafc; color: #000;" data-bg="#f8fafc" data-text="#000">Light/Black</button>
                                         <button class="preset-cover-btn" style="background: #000; color: #fff;" data-bg="#000" data-text="#fff">Black/White</button>
+                                        <button class="preset-cover-btn" style="background: #0f172a; color: #818cf8;" data-bg="#0f172a" data-text="#818cf8">Navy/Purple</button>
+                                        <button class="preset-cover-btn" style="background: #f1f5f9; color: #dc2626;" data-bg="#f1f5f9" data-text="#dc2626">Light/Red</button>
+                                        <button class="preset-cover-btn" style="background: #1e3a8a; color: #fef08a;" data-bg="#1e3a8a" data-text="#fef08a">Dark Blue/Yellow</button>
+                                        <button class="preset-cover-btn" style="background: #4c1d95; color: #f0abfc;" data-bg="#4c1d95" data-text="#f0abfc">Purple/Pink</button>
                                     </div>
                                 </li>
                                 <li><h6 class="dropdown-header">Custom Colors</h6></li>
@@ -1000,6 +1038,8 @@
                                             <div class="color-option" style="background-color: #fce7f3;" data-color="#fce7f3"></div>
                                             <div class="color-option" style="background-color: #e0f2fe;" data-color="#e0f2fe"></div>
                                             <div class="color-option" style="background-color: #ecfccb;" data-color="#ecfccb"></div>
+                                            <div class="color-option" style="background-color: #f5f5f4;" data-color="#f5f5f4"></div>
+                                            <div class="color-option" style="background-color: #f8fafc;" data-color="#f8fafc"></div>
                                         </div>
                                     </div>
                                 </li>
@@ -1016,6 +1056,7 @@
                                             <div class="color-option" style="background-color: #0ea5e9;" data-color="#0ea5e9"></div>
                                             <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
                                             <div class="color-option" style="background-color: #000000;" data-color="#000000"></div>
+                                            <div class="color-option" style="background-color: #f97316;" data-color="#f97316"></div>
                                         </div>
                                     </div>
                                 </li>
@@ -1031,6 +1072,8 @@
                                             <div class="cover-color-option" style="background-color: #64748b;" data-color="#64748b"></div>
                                             <div class="cover-color-option" style="background-color: #94a3b8;" data-color="#94a3b8"></div>
                                             <div class="cover-color-option" style="background-color: #cbd5e1;" data-color="#cbd5e1"></div>
+                                            <div class="cover-color-option" style="background-color: #0f172a;" data-color="#0f172a"></div>
+                                            <div class="cover-color-option" style="background-color: #1e3a8a;" data-color="#1e3a8a"></div>
                                         </div>
                                     </div>
                                 </li>
@@ -1175,12 +1218,27 @@
         </div>
         
         <div class="mb-4">
+            <h6 class="mb-2">Letter Spacing</h6>
+            <div class="letter-spacing-slider-container">
+                <input type="range" class="letter-spacing-slider" min="0" max="0.5" step="0.01" value="0">
+                <div class="d-flex justify-content-between small">
+                    <span>Tight</span>
+                    <span>Wide</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-4">
             <h6 class="mb-2">Preset Color Combinations</h6>
             <div class="preset-cover-buttons">
                 <button class="preset-cover-btn" style="background: #000; color: #4361ee;" data-bg="#000" data-text="#4361ee">Black/Blue</button>
                 <button class="preset-cover-btn" style="background: #fff; color: #4361ee;" data-bg="#fff" data-text="#4361ee">White/Blue</button>
                 <button class="preset-cover-btn" style="background: #ffff00; color: #000;" data-bg="#ffff00" data-text="#000">Yellow/Black</button>
                 <button class="preset-cover-btn" style="background: #1e293b; color: #fff;" data-bg="#1e293b" data-text="#fff">Dark/White</button>
+                <button class="preset-cover-btn" style="background: #f8fafc; color: #000;" data-bg="#f8fafc" data-text="#000">Light/Black</button>
+                <button class="preset-cover-btn" style="background: #000; color: #fff;" data-bg="#000" data-text="#fff">Black/White</button>
+                <button class="preset-cover-btn" style="background: #0f172a; color: #818cf8;" data-bg="#0f172a" data-text="#818cf8">Navy/Purple</button>
+                <button class="preset-cover-btn" style="background: #f1f5f9; color: #dc2626;" data-bg="#f1f5f9" data-text="#dc2626">Light/Red</button>
             </div>
         </div>
         
@@ -1279,6 +1337,7 @@
         const addBookmarkBtn = document.getElementById('addBookmarkBtn');
         const zoomSlider = document.querySelector('.zoom-slider');
         const spacingSlider = document.querySelector('.spacing-slider');
+        const letterSpacingSlider = document.querySelector('.letter-spacing-slider');
         const presetCoverButtons = document.querySelectorAll('.preset-cover-btn');
         const mobileUpBtn = document.getElementById('mobileUpBtn');
         const mobileDownBtn = document.getElementById('mobileDownBtn');
@@ -1299,6 +1358,7 @@
         const closeMobileSettings = document.getElementById('closeMobileSettings');
         const mobileZoomSlider = mobileSettingsPanel.querySelector('.zoom-slider');
         const mobileSpacingSlider = mobileSettingsPanel.querySelector('.spacing-slider');
+        const mobileLetterSpacingSlider = mobileSettingsPanel.querySelector('.letter-spacing-slider');
         const mobilePresetButtons = mobileSettingsPanel.querySelectorAll('.preset-cover-btn');
         const mobileBgColorOptions = mobileSettingsPanel.querySelectorAll('.color-picker-container .color-option');
         const mobileTextColorOptions = mobileSettingsPanel.querySelectorAll('.color-picker-container:nth-of-type(2) .color-option');
@@ -1324,6 +1384,7 @@
         let currentFileName = '';
         let isPaused = false;
         let lineSpacing = 1.8;
+        let letterSpacing = 0;
         let bookmarks = [];
         let searchResults = [];
         let coverColor = '#000000';
@@ -1359,6 +1420,13 @@
                 document.documentElement.style.setProperty('--line-spacing', lineSpacing);
                 spacingSlider.value = lineSpacing;
                 mobileSpacingSlider.value = lineSpacing;
+            }
+            
+            if (settings.letterSpacing) {
+                letterSpacing = parseFloat(settings.letterSpacing);
+                document.documentElement.style.setProperty('--letter-spacing', `${letterSpacing}px`);
+                letterSpacingSlider.value = letterSpacing;
+                mobileLetterSpacingSlider.value = letterSpacing;
             }
             
             if (settings.activeLineBgColor) {
@@ -1592,6 +1660,7 @@
                 darkMode: isDarkMode,
                 fontSize: currentFontSize,
                 lineSpacing: lineSpacing,
+                letterSpacing: letterSpacing,
                 activeLineBgColor: activeLineBgColor,
                 activeTextColor: activeTextColor,
                 coverColor: coverColor,
@@ -1730,6 +1799,26 @@
                     lineSpacing = newSpacing;
                     spacingSlider.value = newSpacing;
                     document.documentElement.style.setProperty('--line-spacing', lineSpacing);
+                    saveSettings();
+                }
+            });
+            
+            letterSpacingSlider.addEventListener('input', (e) => {
+                const newSpacing = parseFloat(e.target.value);
+                if (newSpacing !== letterSpacing) {
+                    letterSpacing = newSpacing;
+                    mobileLetterSpacingSlider.value = newSpacing;
+                    document.documentElement.style.setProperty('--letter-spacing', `${letterSpacing}px`);
+                    saveSettings();
+                }
+            });
+            
+            mobileLetterSpacingSlider.addEventListener('input', (e) => {
+                const newSpacing = parseFloat(e.target.value);
+                if (newSpacing !== letterSpacing) {
+                    letterSpacing = newSpacing;
+                    letterSpacingSlider.value = newSpacing;
+                    document.documentElement.style.setProperty('--letter-spacing', `${letterSpacing}px`);
                     saveSettings();
                 }
             });
@@ -2554,64 +2643,106 @@
             scrollToActiveLine();
         }
 
-        // Split text into sentences and meaningful chunks
+        // Improved text parsing algorithm
         function splitIntoSentences(text) {
-            // First, split by paragraphs
+            // First, normalize all whitespace to single spaces
+            text = text.replace(/\s+/g, ' ').trim();
+            
+            // Split by paragraphs first (double newlines)
             let paragraphs = text.split(/\n\s*\n/);
             
             let result = [];
             
             paragraphs.forEach(paragraph => {
-                // Clean up the paragraph
-                paragraph = paragraph.trim().replace(/\s+/g, ' ');
-                
+                paragraph = paragraph.trim();
                 if (paragraph.length === 0) return;
                 
-                // If paragraph is short enough, add it as is
+                // If the paragraph is short enough, add it as is
                 if (paragraph.length < 120) {
                     result.push(paragraph);
                     return;
                 }
                 
-                // Otherwise, split into sentences
-                let sentences = paragraph.split(/([.!?]+[\s'")\]]*)/);
+                // Split into sentences while preserving abbreviations
+                let sentences = [];
+                let currentSentence = '';
+                let inQuote = false;
+                let inParens = false;
                 
-                let combined = [];
-                for (let i = 0; i < sentences.length; i += 2) {
-                    if (sentences[i] || sentences[i + 1]) {
-                        combined.push((sentences[i] || '') + (sentences[i + 1] || ''));
+                for (let i = 0; i < paragraph.length; i++) {
+                    const char = paragraph[i];
+                    currentSentence += char;
+                    
+                    // Track quotes and parentheses
+                    if (char === '"' || char === "'") inQuote = !inQuote;
+                    if (char === '(') inParens = true;
+                    if (char === ')') inParens = false;
+                    
+                    // Check for sentence endings when not in quotes or parentheses
+                    if (!inQuote && !inParens) {
+                        // Look for sentence-ending punctuation followed by space or end
+                        if (/[.!?]/.test(char) && (i === paragraph.length - 1 || /[\s"]/.test(paragraph[i + 1]))) {
+                            // Check for common abbreviations that shouldn't split sentences
+                            const abbrevCheck = currentSentence.toLowerCase().trim().split(/\s+/);
+                            const lastWord = abbrevCheck[abbrevCheck.length - 1];
+                            
+                            if (!isCommonAbbreviation(lastWord)) {
+                                sentences.push(currentSentence.trim());
+                                currentSentence = '';
+                                // Skip the space after the punctuation
+                                if (paragraph[i + 1] === ' ') i++;
+                            }
+                        }
                     }
                 }
                 
-                // Process each sentence
-                combined.forEach(sentence => {
-                    sentence = sentence.trim();
-                    if (sentence.length === 0) return;
-                    
-                    // If sentence is short enough, add it as is
+                // Add any remaining text
+                if (currentSentence.trim()) {
+                    sentences.push(currentSentence.trim());
+                }
+                
+                // Process each sentence to ensure proper length
+                sentences.forEach(sentence => {
                     if (sentence.length < 120) {
                         result.push(sentence);
                         return;
                     }
                     
-                    // Otherwise, split by clauses
-                    let clauses = sentence.split(/([,;:]+\s)/);
-                    let currentChunk = '';
+                    // Split long sentences at natural breaks
+                    let parts = [];
+                    let currentPart = '';
+                    let words = sentence.split(' ');
                     
-                    for (let i = 0; i < clauses.length; i++) {
-                        if (currentChunk.length + clauses[i].length < 80) {
-                            currentChunk += clauses[i];
+                    for (let word of words) {
+                        if ((currentPart + word).length < 100) {
+                            currentPart += (currentPart ? ' ' : '') + word;
                         } else {
-                            if (currentChunk) result.push(currentChunk.trim());
-                            currentChunk = clauses[i];
+                            if (currentPart) parts.push(currentPart);
+                            currentPart = word;
                         }
                     }
                     
-                    if (currentChunk) result.push(currentChunk.trim());
+                    if (currentPart) parts.push(currentPart);
+                    
+                    // Join parts with proper punctuation
+                    for (let part of parts) {
+                        result.push(part);
+                    }
                 });
             });
             
             return result.filter(line => line.trim() !== '');
+        }
+
+        // Helper function to identify common abbreviations
+        function isCommonAbbreviation(word) {
+            const abbreviations = [
+                'mr.', 'mrs.', 'ms.', 'dr.', 'prof.', 'rev.', 'hon.', 'jr.', 'sr.', 
+                'st.', 'ave.', 'blvd.', 'rd.', 'ln.', 'etc.', 'e.g.', 'i.e.', 'vs.', 
+                'a.m.', 'p.m.', 'a.d.', 'b.c.', 'u.s.', 'u.k.', 'inc.', 'corp.', 'ltd.'
+            ];
+            
+            return abbreviations.includes(word.toLowerCase());
         }
 
         // Handle keyboard navigation
@@ -2811,6 +2942,7 @@
             updateActiveLineColors();
             document.documentElement.style.setProperty('--active-text-color', activeTextColor);
             document.documentElement.style.setProperty('--cover-color', coverColor);
+            document.documentElement.style.setProperty('--letter-spacing', `${letterSpacing}px`);
         }
 
         // Initialize the app
