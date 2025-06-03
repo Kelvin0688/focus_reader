@@ -588,13 +588,15 @@
 
         body.dark-mode .mobile-bottom-nav {
             background-color: rgba(30, 41, 59, 0.9);
+            color: #e2e8f0;
         }
 
         .mobile-bottom-nav-container {
             display: inline-flex;
             padding: 0 15px;
-            justify-content: space-evenly;
+            justify-content: space-between;
             width: 100%;
+            min-width: max-content;
         }
 
         .mobile-nav-item {
@@ -607,9 +609,10 @@
             color: var(--text-primary);
             text-decoration: none;
             font-size: 0.8rem;
-            margin: 0 5px;
+            margin: 0 2px;
             border-radius: 10px;
             transition: all 0.2s ease;
+            flex: 1;
         }
 
         body.dark-mode .mobile-nav-item {
@@ -617,9 +620,13 @@
         }
 
         .mobile-nav-item i {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             margin-bottom: 5px;
             color: var(--primary-color);
+        }
+
+        body.dark-mode .mobile-nav-item i {
+            color: #818cf8;
         }
 
         .mobile-nav-item.active {
@@ -633,6 +640,11 @@
         .mobile-nav-item .label {
             font-size: 0.7rem;
             text-align: center;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .mobile-nav-item .label {
+            color: #e2e8f0;
         }
 
         .mobile-nav-handle {
@@ -672,19 +684,26 @@
         }
 
         /* Mobile Settings Panel */
-        @media (max-width: 992px) {
-            .dropdown-menu.show {
-                display: block !important;
-                position: fixed;
-                bottom: 80px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 90%;
-                max-width: 400px;
-                z-index: 2000;
-                max-height: 60vh;
-                overflow-y: auto;
-            }
+        .mobile-settings-panel {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: var(--card-bg-light);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 2000;
+            max-height: 60vh;
+            overflow-y: auto;
+            display: none;
+            padding: 1rem;
+        }
+
+        body.dark-mode .mobile-settings-panel {
+            background: var(--card-bg-dark);
+            border: 1px solid #475569;
         }
 
         /* Responsive Styles */
@@ -1126,6 +1145,81 @@
         </div>
     </div>
 
+    <!-- Mobile Settings Panel -->
+    <div class="mobile-settings-panel" id="mobileSettingsPanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Settings</h5>
+            <button class="btn btn-sm btn-close" id="closeMobileSettings"></button>
+        </div>
+        
+        <div class="mb-4">
+            <h6 class="mb-2">Font Size</h6>
+            <div class="zoom-slider-container">
+                <input type="range" class="zoom-slider" min="0.8" max="10" step="0.1" value="1.1">
+                <div class="d-flex justify-content-between small">
+                    <span>Small</span>
+                    <span>Large</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <h6 class="mb-2">Line Spacing</h6>
+            <div class="spacing-slider-container">
+                <input type="range" class="spacing-slider" min="1.2" max="3" step="0.1" value="1.8">
+                <div class="d-flex justify-content-between small">
+                    <span>Tight</span>
+                    <span>Loose</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <h6 class="mb-2">Preset Color Combinations</h6>
+            <div class="preset-cover-buttons">
+                <button class="preset-cover-btn" style="background: #000; color: #4361ee;" data-bg="#000" data-text="#4361ee">Black/Blue</button>
+                <button class="preset-cover-btn" style="background: #fff; color: #4361ee;" data-bg="#fff" data-text="#4361ee">White/Blue</button>
+                <button class="preset-cover-btn" style="background: #ffff00; color: #000;" data-bg="#ffff00" data-text="#000">Yellow/Black</button>
+                <button class="preset-cover-btn" style="background: #1e293b; color: #fff;" data-bg="#1e293b" data-text="#fff">Dark/White</button>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <h6 class="mb-2">Background Color</h6>
+            <div class="color-picker-container">
+                <div class="color-option selected" style="background-color: #e0e7ff;" data-color="#e0e7ff"></div>
+                <div class="color-option" style="background-color: #fee2e2;" data-color="#fee2e2"></div>
+                <div class="color-option" style="background-color: #dcfce7;" data-color="#dcfce7"></div>
+                <div class="color-option" style="background-color: #fef3c7;" data-color="#fef3c7"></div>
+                <div class="color-option" style="background-color: #ede9fe;" data-color="#ede9fe"></div>
+                <div class="color-option" style="background-color: #fce7f3;" data-color="#fce7f3"></div>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <h6 class="mb-2">Text Color</h6>
+            <div class="color-picker-container">
+                <div class="color-option selected" style="background-color: #4361ee;" data-color="#4361ee"></div>
+                <div class="color-option" style="background-color: #ef4444;" data-color="#ef4444"></div>
+                <div class="color-option" style="background-color: #10b981;" data-color="#10b981"></div>
+                <div class="color-option" style="background-color: #f59e0b;" data-color="#f59e0b"></div>
+                <div class="color-option" style="background-color: #8b5cf6;" data-color="#8b5cf6"></div>
+                <div class="color-option" style="background-color: #ec4899;" data-color="#ec4899"></div>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <h6 class="mb-2">Cover Color</h6>
+            <div class="cover-color-picker">
+                <div class="cover-color-option selected" style="background-color: #000000;" data-color="#000000"></div>
+                <div class="cover-color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
+                <div class="cover-color-option" style="background-color: #1e293b;" data-color="#1e293b"></div>
+                <div class="cover-color-option" style="background-color: #334155;" data-color="#334155"></div>
+                <div class="cover-color-option" style="background-color: #475569;" data-color="#475569"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="zoom-notification" id="zoomNotification"></div>
 
     <div class="search-container" id="searchContainer">
@@ -1201,6 +1295,14 @@
         const mobileBookmarkToggle = document.getElementById('mobileBookmarkToggle');
         const mobileUploadToggle = document.getElementById('mobileUploadToggle');
         const mobileSettingsToggle = document.getElementById('mobileSettingsToggle');
+        const mobileSettingsPanel = document.getElementById('mobileSettingsPanel');
+        const closeMobileSettings = document.getElementById('closeMobileSettings');
+        const mobileZoomSlider = mobileSettingsPanel.querySelector('.zoom-slider');
+        const mobileSpacingSlider = mobileSettingsPanel.querySelector('.spacing-slider');
+        const mobilePresetButtons = mobileSettingsPanel.querySelectorAll('.preset-cover-btn');
+        const mobileBgColorOptions = mobileSettingsPanel.querySelectorAll('.color-picker-container .color-option');
+        const mobileTextColorOptions = mobileSettingsPanel.querySelectorAll('.color-picker-container:nth-of-type(2) .color-option');
+        const mobileCoverColorOptions = mobileSettingsPanel.querySelectorAll('.cover-color-picker .cover-color-option');
 
         // State variables
         let currentLineIndex = 0;
@@ -1249,41 +1351,34 @@
                 currentFontSize = parseFloat(settings.fontSize);
                 zoomLevel.textContent = currentFontSize.toFixed(1) + 'x';
                 zoomSlider.value = currentFontSize;
+                mobileZoomSlider.value = currentFontSize;
             }
             
             if (settings.lineSpacing) {
                 lineSpacing = parseFloat(settings.lineSpacing);
                 document.documentElement.style.setProperty('--line-spacing', lineSpacing);
                 spacingSlider.value = lineSpacing;
+                mobileSpacingSlider.value = lineSpacing;
             }
             
             if (settings.activeLineBgColor) {
                 activeLineBgColor = settings.activeLineBgColor;
-                const bgOption = bgColorPicker.querySelector(`.color-option[data-color="${activeLineBgColor}"]`);
-                if (bgOption) {
-                    bgColorPicker.querySelector('.selected').classList.remove('selected');
-                    bgOption.classList.add('selected');
-                }
+                selectColorOption(bgColorPicker, activeLineBgColor);
+                selectColorOption(mobileSettingsPanel.querySelector('.color-picker-container'), activeLineBgColor);
             }
             
             if (settings.activeTextColor) {
                 activeTextColor = settings.activeTextColor;
                 document.documentElement.style.setProperty('--active-text-color', activeTextColor);
-                const textOption = textColorPicker.querySelector(`.color-option[data-color="${activeTextColor}"]`);
-                if (textOption) {
-                    textColorPicker.querySelector('.selected').classList.remove('selected');
-                    textOption.classList.add('selected');
-                }
+                selectColorOption(textColorPicker, activeTextColor);
+                selectColorOption(mobileSettingsPanel.querySelectorAll('.color-picker-container')[1], activeTextColor);
             }
             
             if (settings.coverColor) {
                 coverColor = settings.coverColor;
                 document.documentElement.style.setProperty('--cover-color', coverColor);
-                const coverOption = coverColorPicker.querySelector(`.cover-color-option[data-color="${coverColor}"]`);
-                if (coverOption) {
-                    coverColorPicker.querySelector('.selected').classList.remove('selected');
-                    coverOption.classList.add('selected');
-                }
+                selectColorOption(coverColorPicker, coverColor);
+                selectColorOption(mobileSettingsPanel.querySelector('.cover-color-picker'), coverColor);
             }
             
             if (settings.blurEffect !== undefined) {
@@ -1335,6 +1430,18 @@
                 bookmarks = settings.bookmarks;
                 updateBookmarksList();
             }
+        }
+
+        // Helper function to select color option
+        function selectColorOption(container, color) {
+            if (!container) return;
+            
+            const selected = container.querySelector('.selected');
+            if (selected) selected.classList.remove('selected');
+            
+            const option = container.querySelector(`.color-option[data-color="${color}"]`) || 
+                          container.querySelector(`.cover-color-option[data-color="${color}"]`);
+            if (option) option.classList.add('selected');
         }
 
         // Update mobile nav icons based on current state
@@ -1544,63 +1651,64 @@
                 fileUpload.click();
             });
             
-            bgColorPicker.querySelectorAll('.color-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    bgColorPicker.querySelector('.selected').classList.remove('selected');
-                    option.classList.add('selected');
-                    activeLineBgColor = option.dataset.color;
-                    updateActiveLineColors();
-                    saveSettings();
-                });
+            // Color pickers
+            setupColorPicker(bgColorPicker, (color) => {
+                activeLineBgColor = color;
+                updateActiveLineColors();
+                saveSettings();
             });
             
-            textColorPicker.querySelectorAll('.color-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    textColorPicker.querySelector('.selected').classList.remove('selected');
-                    option.classList.add('selected');
-                    activeTextColor = option.dataset.color;
-                    document.documentElement.style.setProperty('--active-text-color', activeTextColor);
-                    
-                    // Update active line and words immediately
-                    const lineElements = textContent.querySelectorAll('.line');
-                    if (lineElements.length > 0 && currentLineIndex >= 0) {
-                        const activeLine = lineElements[currentLineIndex];
-                        if (isWordMode) {
-                            const wordSpans = activeLine.querySelectorAll('span');
-                            wordSpans.forEach(span => {
-                                if (span.classList.contains('word-highlight')) {
-                                    span.style.color = activeTextColor;
-                                }
-                            });
-                        } else {
-                            activeLine.style.color = activeTextColor;
-                        }
-                    }
-                    
-                    saveSettings();
-                });
+            setupColorPicker(textColorPicker, (color) => {
+                activeTextColor = color;
+                document.documentElement.style.setProperty('--active-text-color', activeTextColor);
+                updateActiveTextColors();
+                saveSettings();
             });
             
-            coverColorPicker.querySelectorAll('.cover-color-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    coverColorPicker.querySelector('.selected').classList.remove('selected');
-                    option.classList.add('selected');
-                    coverColor = option.dataset.color;
-                    document.documentElement.style.setProperty('--cover-color', coverColor);
-                    
-                    // Update immediately if in solid cover mode
-                    if (isSolidCoverActive) {
-                        textContent.style.backgroundColor = coverColor;
-                    }
-                    
-                    saveSettings();
-                });
+            setupColorPicker(coverColorPicker, (color) => {
+                coverColor = color;
+                document.documentElement.style.setProperty('--cover-color', coverColor);
+                updateCoverColor();
+                saveSettings();
             });
             
+            // Mobile color pickers
+            setupColorPicker(mobileSettingsPanel.querySelector('.color-picker-container'), (color) => {
+                activeLineBgColor = color;
+                updateActiveLineColors();
+                saveSettings();
+            });
+            
+            setupColorPicker(mobileSettingsPanel.querySelectorAll('.color-picker-container')[1], (color) => {
+                activeTextColor = color;
+                document.documentElement.style.setProperty('--active-text-color', activeTextColor);
+                updateActiveTextColors();
+                saveSettings();
+            });
+            
+            setupColorPicker(mobileSettingsPanel.querySelector('.cover-color-picker'), (color) => {
+                coverColor = color;
+                document.documentElement.style.setProperty('--cover-color', coverColor);
+                updateCoverColor();
+                saveSettings();
+            });
+            
+            // Sliders
             zoomSlider.addEventListener('input', (e) => {
                 const newFontSize = parseFloat(e.target.value);
                 if (newFontSize !== currentFontSize) {
                     currentFontSize = newFontSize;
+                    mobileZoomSlider.value = newFontSize;
+                    updateFontSize();
+                    saveSettings();
+                }
+            });
+            
+            mobileZoomSlider.addEventListener('input', (e) => {
+                const newFontSize = parseFloat(e.target.value);
+                if (newFontSize !== currentFontSize) {
+                    currentFontSize = newFontSize;
+                    zoomSlider.value = newFontSize;
                     updateFontSize();
                     saveSettings();
                 }
@@ -1610,54 +1718,32 @@
                 const newSpacing = parseFloat(e.target.value);
                 if (newSpacing !== lineSpacing) {
                     lineSpacing = newSpacing;
+                    mobileSpacingSlider.value = newSpacing;
                     document.documentElement.style.setProperty('--line-spacing', lineSpacing);
                     saveSettings();
                 }
             });
             
+            mobileSpacingSlider.addEventListener('input', (e) => {
+                const newSpacing = parseFloat(e.target.value);
+                if (newSpacing !== lineSpacing) {
+                    lineSpacing = newSpacing;
+                    spacingSlider.value = newSpacing;
+                    document.documentElement.style.setProperty('--line-spacing', lineSpacing);
+                    saveSettings();
+                }
+            });
+            
+            // Preset cover buttons
             presetCoverButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    const bgColor = button.dataset.bg;
-                    const textColor = button.dataset.text;
-                    
-                    // Update cover color
-                    coverColor = bgColor;
-                    document.documentElement.style.setProperty('--cover-color', coverColor);
-                    
-                    // Update text color
-                    activeTextColor = textColor;
-                    document.documentElement.style.setProperty('--active-text-color', activeTextColor);
-                    
-                    // Update UI immediately
-                    const lineElements = textContent.querySelectorAll('.line');
-                    if (lineElements.length > 0 && currentLineIndex >= 0) {
-                        const activeLine = lineElements[currentLineIndex];
-                        if (isWordMode) {
-                            const wordSpans = activeLine.querySelectorAll('span');
-                            wordSpans.forEach(span => {
-                                if (span.classList.contains('word-highlight')) {
-                                    span.style.color = activeTextColor;
-                                }
-                            });
-                        } else {
-                            activeLine.style.color = activeTextColor;
-                        }
-                    }
-                    
-                    // Update color pickers
-                    const coverOption = coverColorPicker.querySelector(`.cover-color-option[data-color="${coverColor}"]`);
-                    if (coverOption) {
-                        coverColorPicker.querySelector('.selected').classList.remove('selected');
-                        coverOption.classList.add('selected');
-                    }
-                    
-                    const textOption = textColorPicker.querySelector(`.color-option[data-color="${activeTextColor}"]`);
-                    if (textOption) {
-                        textColorPicker.querySelector('.selected').classList.remove('selected');
-                        textOption.classList.add('selected');
-                    }
-                    
-                    saveSettings();
+                    applyPresetCover(button.dataset.bg, button.dataset.text);
+                });
+            });
+            
+            mobilePresetButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    applyPresetCover(button.dataset.bg, button.dataset.text);
                 });
             });
             
@@ -1704,7 +1790,8 @@
             mobileNavHandle.addEventListener('click', toggleMobileNav);
             
             // Mobile settings toggle
-            mobileSettingsToggle.addEventListener('click', toggleSettingsPanel);
+            mobileSettingsToggle.addEventListener('click', toggleMobileSettings);
+            closeMobileSettings.addEventListener('click', toggleMobileSettings);
             
             // Initialize touch events for mobile nav
             let startY = 0;
@@ -1742,22 +1829,76 @@
             }, { passive: true });
         }
 
-        // Toggle settings panel on mobile
-        function toggleSettingsPanel() {
-            const settingsPanel = document.querySelector('.dropdown-menu');
-            if (settingsPanel.style.display === 'block') {
-                settingsPanel.style.display = 'none';
+        // Helper function to setup color picker
+        function setupColorPicker(container, callback) {
+            if (!container) return;
+            
+            const options = container.querySelectorAll('.color-option') || 
+                           container.querySelectorAll('.cover-color-option');
+            
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const selected = container.querySelector('.selected');
+                    if (selected) selected.classList.remove('selected');
+                    option.classList.add('selected');
+                    callback(option.dataset.color);
+                });
+            });
+        }
+
+        // Apply preset cover colors
+        function applyPresetCover(bgColor, textColor) {
+            // Update cover color
+            coverColor = bgColor;
+            document.documentElement.style.setProperty('--cover-color', coverColor);
+            
+            // Update text color
+            activeTextColor = textColor;
+            document.documentElement.style.setProperty('--active-text-color', activeTextColor);
+            
+            // Update UI immediately
+            updateActiveTextColors();
+            
+            // Update color pickers
+            selectColorOption(coverColorPicker, coverColor);
+            selectColorOption(textColorPicker, activeTextColor);
+            selectColorOption(mobileSettingsPanel.querySelector('.cover-color-picker'), coverColor);
+            selectColorOption(mobileSettingsPanel.querySelectorAll('.color-picker-container')[1], activeTextColor);
+            
+            saveSettings();
+        }
+
+        // Update active text colors
+        function updateActiveTextColors() {
+            const lineElements = textContent.querySelectorAll('.line');
+            if (lineElements.length > 0 && currentLineIndex >= 0) {
+                const activeLine = lineElements[currentLineIndex];
+                if (isWordMode) {
+                    const wordSpans = activeLine.querySelectorAll('span');
+                    wordSpans.forEach(span => {
+                        if (span.classList.contains('word-highlight')) {
+                            span.style.color = activeTextColor;
+                        }
+                    });
+                } else {
+                    activeLine.style.color = activeTextColor;
+                }
+            }
+        }
+
+        // Update cover color
+        function updateCoverColor() {
+            if (isSolidCoverActive) {
+                textContent.style.backgroundColor = coverColor;
+            }
+        }
+
+        // Toggle mobile settings panel
+        function toggleMobileSettings() {
+            if (mobileSettingsPanel.style.display === 'block') {
+                mobileSettingsPanel.style.display = 'none';
             } else {
-                settingsPanel.style.display = 'block';
-                settingsPanel.style.position = 'fixed';
-                settingsPanel.style.bottom = '80px';
-                settingsPanel.style.left = '50%';
-                settingsPanel.style.transform = 'translateX(-50%)';
-                settingsPanel.style.width = '90%';
-                settingsPanel.style.maxWidth = '400px';
-                settingsPanel.style.zIndex = '2000';
-                
-                // Hide other panels
+                mobileSettingsPanel.style.display = 'block';
                 searchContainer.style.display = 'none';
                 bookmarksPanel.style.display = 'none';
             }
@@ -1784,7 +1925,7 @@
             mobileBottomNav.style.transform = 'translateY(100%)';
             mobileNavHandle.classList.remove('active');
             isMobileNavVisible = false;
-            document.querySelector('.dropdown-menu').style.display = 'none';
+            mobileSettingsPanel.style.display = 'none';
         }
 
         // Toggle solid cover effect
@@ -1803,7 +1944,7 @@
                 searchContainer.style.display = 'block';
                 searchInput.focus();
                 bookmarksPanel.style.display = 'none';
-                document.querySelector('.dropdown-menu').style.display = 'none';
+                mobileSettingsPanel.style.display = 'none';
             }
         }
 
@@ -1862,7 +2003,7 @@
             } else {
                 bookmarksPanel.style.display = 'block';
                 searchContainer.style.display = 'none';
-                document.querySelector('.dropdown-menu').style.display = 'none';
+                mobileSettingsPanel.style.display = 'none';
             }
         }
 
@@ -2637,6 +2778,7 @@
                 currentFontSize = newFontSize;
                 updateFontSize();
                 zoomSlider.value = currentFontSize;
+                mobileZoomSlider.value = currentFontSize;
                 
                 const changeType = change > 0 ? '+' : '';
                 showZoomNotification(`Font size ${changeType}${change.toFixed(1)} (${currentFontSize.toFixed(1)}x)`);
