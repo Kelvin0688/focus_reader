@@ -197,6 +197,12 @@
             padding: 0.5rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         body.dark-mode .dropdown-menu {
@@ -235,6 +241,8 @@
 
         .file-upload-container:hover {
             border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
         .file-upload-label {
@@ -248,6 +256,11 @@
             font-size: 2.5rem;
             color: var(--primary-color);
             margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .file-upload-container:hover .file-upload-icon {
+            transform: scale(1.1);
         }
 
         .progress-container {
@@ -340,6 +353,7 @@
             overflow-y: auto;
             display: none;
             padding: 1rem;
+            animation: fadeIn 0.2s ease-out;
         }
 
         body.dark-mode .bookmarks-panel {
@@ -388,6 +402,7 @@
             z-index: 1000;
             display: none;
             padding: 1rem;
+            animation: fadeIn 0.2s ease-out;
         }
 
         body.dark-mode .search-container {
@@ -405,6 +420,7 @@
             padding: 0.5rem;
             border-bottom: 1px solid #e2e8f0;
             cursor: pointer;
+            transition: background-color 0.2s ease;
         }
 
         body.dark-mode .search-result-item {
@@ -455,6 +471,11 @@
             font-size: 1.2rem;
             cursor: pointer;
             z-index: 10;
+            transition: transform 0.2s ease;
+        }
+
+        .bookmark-btn:hover {
+            transform: scale(1.2);
         }
 
         body.dark-mode .bookmark-btn {
@@ -524,6 +545,35 @@
         .zoom-slider {
             width: 100%;
             margin: 0.5rem 0;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #cbd5e1;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        body.dark-mode .zoom-slider {
+            background: #475569;
+        }
+
+        body.dark-mode .zoom-slider::-webkit-slider-thumb {
+            background: #818cf8;
         }
 
         /* Line Spacing Slider */
@@ -535,6 +585,29 @@
         .spacing-slider {
             width: 100%;
             margin: 0.5rem 0;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #cbd5e1;
+            outline: none;
+        }
+
+        .spacing-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        body.dark-mode .spacing-slider {
+            background: #475569;
+        }
+
+        body.dark-mode .spacing-slider::-webkit-slider-thumb {
+            background: #818cf8;
         }
 
         /* Letter Spacing Slider */
@@ -546,6 +619,29 @@
         .letter-spacing-slider {
             width: 100%;
             margin: 0.5rem 0;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #cbd5e1;
+            outline: none;
+        }
+
+        .letter-spacing-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        body.dark-mode .letter-spacing-slider {
+            background: #475569;
+        }
+
+        body.dark-mode .letter-spacing-slider::-webkit-slider-thumb {
+            background: #818cf8;
         }
 
         /* Mobile Navigation Buttons */
@@ -722,6 +818,63 @@
             border: 1px solid #475569;
         }
 
+        /* Welcome Message */
+        .welcome-message {
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .welcome-message h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .welcome-message p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* Recent Document Notification */
+        .recent-document {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background-color: var(--primary-light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .recent-document:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recent-document i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .recent-document .file-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .recent-document .file-name {
+            font-weight: 500;
+        }
+
+        .recent-document .file-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
         /* Responsive Styles */
         @media (max-width: 992px) {
             .navbar-collapse {
@@ -874,7 +1027,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--primary-color);">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="#">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
                 <i class="fas fa-book-reader me-1"></i>
                 <span class="logo-text">Focus Reader</span>
             </a>
@@ -891,16 +1044,22 @@
                 
                 <div class="collapse navbar-collapse" id="navbarControls">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <div class="d-flex align-items-center me-3">
-                                <button id="zoomOut" class="control-btn me-2" title="Zoom Out">
-                                    <i class="fas fa-search-minus"></i>
-                                </button>
-                                <span id="zoomLevel" class="zoom-display text-white">1.00x</span>
-                                <button id="zoomIn" class="control-btn ms-2" title="Zoom In">
-                                    <i class="fas fa-search-plus"></i>
-                                </button>
-                            </div>
+                        <li class="nav-item dropdown">
+                            <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Font Size">
+                                <i class="fas fa-text-height"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end p-3">
+                                <li><h6 class="dropdown-header">Font Size</h6></li>
+                                <li>
+                                    <div class="zoom-slider-container">
+                                        <input type="range" class="zoom-slider" min="0.8" max="10" step="0.1" value="1.1">
+                                        <div class="d-flex justify-content-between small">
+                                            <span>Small</span>
+                                            <span>Large</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </li>
                         
                         <li class="nav-item">
@@ -988,24 +1147,6 @@
                         </li>
                         
                         <li class="nav-item dropdown">
-                            <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Font Size">
-                                <i class="fas fa-text-height"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end p-3">
-                                <li><h6 class="dropdown-header">Font Size</h6></li>
-                                <li>
-                                    <div class="zoom-slider-container">
-                                        <input type="range" class="zoom-slider" min="0.8" max="10" step="0.1" value="1.1">
-                                        <div class="d-flex justify-content-between small">
-                                            <span>Small</span>
-                                            <span>Large</span>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                        
-                        <li class="nav-item dropdown">
                             <button class="control-btn dropdown-toggle" data-bs-toggle="dropdown" title="Settings">
                                 <i class="fas fa-cog"></i>
                             </button>
@@ -1049,12 +1190,12 @@
                                         <div class="color-picker-container" id="textColorPicker">
                                             <div class="color-option selected" style="background-color: #4361ee;" data-color="#4361ee"></div>
                                             <div class="color-option" style="background-color: #ef4444;" data-color="#ef4444"></div>
+                                            <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
                                             <div class="color-option" style="background-color: #10b981;" data-color="#10b981"></div>
                                             <div class="color-option" style="background-color: #f59e0b;" data-color="#f59e0b"></div>
                                             <div class="color-option" style="background-color: #8b5cf6;" data-color="#8b5cf6"></div>
                                             <div class="color-option" style="background-color: #ec4899;" data-color="#ec4899"></div>
                                             <div class="color-option" style="background-color: #0ea5e9;" data-color="#0ea5e9"></div>
-                                            <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
                                             <div class="color-option" style="background-color: #000000;" data-color="#000000"></div>
                                             <div class="color-option" style="background-color: #f97316;" data-color="#f97316"></div>
                                         </div>
@@ -1087,6 +1228,24 @@
 
     <div class="container-fluid px-0">
         <div class="file-upload-container" id="uploadContainer">
+            <div class="welcome-message">
+                <h2>Hi, I'm Focus Reader</h2>
+                <p>We help you focus on your reading by highlighting one line or word at a time, reducing distractions and improving comprehension.</p>
+            </div>
+            
+            <div id="recentDocumentContainer" class="d-none">
+                <div class="recent-document" id="recentDocument">
+                    <div class="file-info">
+                        <i class="fas fa-file-alt"></i>
+                        <div>
+                            <div class="file-name" id="recentFileName">Document.pdf</div>
+                            <div class="file-time">Last opened: <span id="recentFileTime">Just now</span></div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
             <label class="file-upload-label">
                 <div class="file-upload-icon">
                     <i class="fas fa-file-upload"></i>
@@ -1103,8 +1262,8 @@
             </div>
         </div>
         
-        <div class="read-container" id="readContainer">
-            <div class="document-title d-none" id="documentTitle">
+        <div class="read-container d-none" id="readContainer">
+            <div class="document-title" id="documentTitle">
                 <i class="fas fa-file-alt"></i>
                 <span id="fileName">No document loaded</span>
                 <button class="bookmark-btn" id="addBookmarkBtn" title="Add Bookmark">
@@ -1141,14 +1300,6 @@
     </div>
     <div class="mobile-bottom-nav" id="mobileBottomNav">
         <div class="mobile-bottom-nav-container">
-            <a href="#" class="mobile-nav-item" id="mobileZoomOut">
-                <i class="fas fa-search-minus"></i>
-                <span class="label">Zoom Out</span>
-            </a>
-            <a href="#" class="mobile-nav-item" id="mobileZoomIn">
-                <i class="fas fa-search-plus"></i>
-                <span class="label">Zoom In</span>
-            </a>
             <a href="#" class="mobile-nav-item" id="mobileThemeToggle">
                 <i class="fas fa-moon"></i>
                 <span class="label">Dark Mode</span>
@@ -1306,9 +1457,6 @@
         const textContent = document.getElementById('textContent');
         const progressContainer = document.getElementById('progressContainer');
         const progressBar = document.getElementById('progressBar');
-        const zoomInBtn = document.getElementById('zoomIn');
-        const zoomOutBtn = document.getElementById('zoomOut');
-        const zoomLevel = document.getElementById('zoomLevel');
         const themeToggle = document.getElementById('themeToggle');
         const ttsToggle = document.getElementById('ttsToggle');
         const ttsPauseToggle = document.getElementById('ttsPauseToggle');
@@ -1343,8 +1491,6 @@
         const mobileDownBtn = document.getElementById('mobileDownBtn');
         const mobileBottomNav = document.getElementById('mobileBottomNav');
         const mobileNavHandle = document.getElementById('mobileNavHandle');
-        const mobileZoomIn = document.getElementById('mobileZoomIn');
-        const mobileZoomOut = document.getElementById('mobileZoomOut');
         const mobileThemeToggle = document.getElementById('mobileThemeToggle');
         const mobileTtsToggle = document.getElementById('mobileTtsToggle');
         const mobileBlurToggle = document.getElementById('mobileBlurToggle');
@@ -1363,6 +1509,11 @@
         const mobileBgColorOptions = mobileSettingsPanel.querySelectorAll('.color-picker-container .color-option');
         const mobileTextColorOptions = mobileSettingsPanel.querySelectorAll('.color-picker-container:nth-of-type(2) .color-option');
         const mobileCoverColorOptions = mobileSettingsPanel.querySelectorAll('.cover-color-picker .cover-color-option');
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        const recentDocumentContainer = document.getElementById('recentDocumentContainer');
+        const recentDocument = document.getElementById('recentDocument');
+        const recentFileName = document.getElementById('recentFileName');
+        const recentFileTime = document.getElementById('recentFileTime');
 
         // State variables
         let currentLineIndex = 0;
@@ -1389,6 +1540,7 @@
         let searchResults = [];
         let coverColor = '#000000';
         let isMobileNavVisible = true;
+        let lastOpenedDocument = null;
 
         // Initialize the application
         function init() {
@@ -1396,6 +1548,10 @@
             loadSettings();
             updateUI();
             updateMobileNavIcons();
+            
+            // Hide read container initially
+            readContainer.classList.add('d-none');
+            uploadContainer.classList.remove('d-none');
         }
 
         // Load settings from localStorage
@@ -1410,7 +1566,6 @@
             
             if (settings.fontSize) {
                 currentFontSize = parseFloat(settings.fontSize);
-                zoomLevel.textContent = currentFontSize.toFixed(1) + 'x';
                 zoomSlider.value = currentFontSize;
                 mobileZoomSlider.value = currentFontSize;
             }
@@ -1472,32 +1627,23 @@
             }
             
             if (settings.document) {
-                currentFileName = settings.document.name;
-                fileNameDisplay.textContent = currentFileName;
-                documentTitle.classList.remove('d-none');
-                displayText(settings.document.text);
-                
-                if (settings.scrollPosition) {
-                    setTimeout(() => {
-                        textContent.scrollTop = settings.scrollPosition;
-                    }, 100);
-                }
-                
-                if (settings.activeLine !== undefined) {
-                    setTimeout(() => {
-                        updateActiveLine(settings.activeLine);
-                        if (isWordMode && settings.activeWord !== undefined) {
-                            currentWordIndex = settings.activeWord;
-                            highlightCurrentWord();
-                        }
-                    }, 200);
-                }
+                lastOpenedDocument = settings.document;
+                updateRecentDocumentUI(settings.document);
             }
             
             if (settings.bookmarks) {
                 bookmarks = settings.bookmarks;
                 updateBookmarksList();
             }
+        }
+
+        // Update recent document UI
+        function updateRecentDocumentUI(document) {
+            if (!document) return;
+            
+            recentFileName.textContent = document.name;
+            recentFileTime.textContent = document.lastOpened || 'Just now';
+            recentDocumentContainer.classList.remove('d-none');
         }
 
         // Helper function to select color option
@@ -1667,10 +1813,7 @@
                 blurEffect: isBlurActive,
                 solidCoverEffect: isSolidCoverActive,
                 wordMode: isWordMode,
-                document: lines.length > 0 ? {
-                    name: currentFileName,
-                    text: lines.join("\n")
-                } : null,
+                document: lastOpenedDocument,
                 scrollPosition: textContent.scrollTop,
                 activeLine: currentLineIndex,
                 activeWord: currentWordIndex,
@@ -1683,11 +1826,6 @@
         // Set up all event listeners
         function setupEventListeners() {
             fileUpload.addEventListener('change', handleFileUpload);
-            
-            zoomInBtn.addEventListener('click', () => adjustZoom(0.1));
-            zoomOutBtn.addEventListener('click', () => adjustZoom(-0.1));
-            mobileZoomIn.addEventListener('click', () => adjustZoom(0.1));
-            mobileZoomOut.addEventListener('click', () => adjustZoom(-0.1));
             
             themeToggle.addEventListener('click', toggleDarkMode);
             mobileThemeToggle.addEventListener('click', toggleDarkMode);
@@ -1720,9 +1858,17 @@
                 fileUpload.click();
             });
             
+            // Recent document click handler
+            recentDocument.addEventListener('click', () => {
+                if (lastOpenedDocument) {
+                    openLastDocument();
+                }
+            });
+            
             // Color pickers
             setupColorPicker(bgColorPicker, (color) => {
                 activeLineBgColor = color;
+                document.documentElement.style.setProperty('--active-line-bg', activeLineBgColor);
                 updateActiveLineColors();
                 saveSettings();
             });
@@ -1744,6 +1890,7 @@
             // Mobile color pickers
             setupColorPicker(mobileSettingsPanel.querySelector('.color-picker-container'), (color) => {
                 activeLineBgColor = color;
+                document.documentElement.style.setProperty('--active-line-bg', activeLineBgColor);
                 updateActiveLineColors();
                 saveSettings();
             });
@@ -1769,6 +1916,7 @@
                     currentFontSize = newFontSize;
                     mobileZoomSlider.value = newFontSize;
                     updateFontSize();
+                    showZoomNotification(`Font size: ${currentFontSize.toFixed(1)}x`);
                     saveSettings();
                 }
             });
@@ -1779,6 +1927,7 @@
                     currentFontSize = newFontSize;
                     zoomSlider.value = newFontSize;
                     updateFontSize();
+                    showZoomNotification(`Font size: ${currentFontSize.toFixed(1)}x`);
                     saveSettings();
                 }
             });
@@ -1882,6 +2031,25 @@
             mobileSettingsToggle.addEventListener('click', toggleMobileSettings);
             closeMobileSettings.addEventListener('click', toggleMobileSettings);
             
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown-menu') && !e.target.closest('.dropdown-toggle')) {
+                    closeAllDropdowns();
+                }
+            });
+            
+            // Close other dropdowns when one is opened
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', (e) => {
+                    const dropdownMenu = toggle.nextElementSibling;
+                    if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                        closeAllDropdowns();
+                        dropdownMenu.style.display = 'block';
+                        e.stopPropagation();
+                    }
+                });
+            });
+            
             // Initialize touch events for mobile nav
             let startY = 0;
             let currentY = 0;
@@ -1918,6 +2086,43 @@
             }, { passive: true });
         }
 
+        // Open last opened document
+        function openLastDocument() {
+            if (!lastOpenedDocument) return;
+            
+            currentFileName = lastOpenedDocument.name;
+            fileNameDisplay.textContent = currentFileName;
+            documentTitle.classList.remove('d-none');
+            
+            uploadContainer.classList.add('d-none');
+            readContainer.classList.remove('d-none');
+            
+            displayText(lastOpenedDocument.text);
+            
+            if (lastOpenedDocument.scrollPosition) {
+                setTimeout(() => {
+                    textContent.scrollTop = lastOpenedDocument.scrollPosition;
+                }, 100);
+            }
+            
+            if (lastOpenedDocument.activeLine !== undefined) {
+                setTimeout(() => {
+                    updateActiveLine(lastOpenedDocument.activeLine);
+                    if (isWordMode && lastOpenedDocument.activeWord !== undefined) {
+                        currentWordIndex = lastOpenedDocument.activeWord;
+                        highlightCurrentWord();
+                    }
+                }, 200);
+            }
+        }
+
+        // Close all dropdown menus
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }
+
         // Helper function to setup color picker
         function setupColorPicker(container, callback) {
             if (!container) return;
@@ -1947,6 +2152,7 @@
             
             // Update UI immediately
             updateActiveTextColors();
+            updateCoverColor();
             
             // Update color pickers
             selectColorOption(coverColorPicker, coverColor);
@@ -2278,6 +2484,7 @@
                     if (isWordMode) {
                         splitCurrentLineIntoWords();
                         currentWordIndex = words.length - 1;
+                        highlightCurrentWord();
                     }
                     return;
                 }
@@ -2497,9 +2704,8 @@
             fileNameDisplay.textContent = currentFileName;
             documentTitle.classList.remove('d-none');
             
-            isUploadVisible = false;
-            uploadContainer.style.display = 'none';
-            readContainer.style.height = 'calc(100vh - 60px)';
+            uploadContainer.classList.add('d-none');
+            readContainer.classList.remove('d-none');
             
             showProgress();
             
@@ -2574,7 +2780,18 @@
                                 textContent = textContent.replace(/\s+/g, ' ').replace(/\s+-\s+/g, '');
                                 displayText(textContent);
                                 hideProgress();
+                                
+                                // Save document info
+                                lastOpenedDocument = {
+                                    name: currentFileName,
+                                    text: textContent,
+                                    lastOpened: new Date().toLocaleString(),
+                                    scrollPosition: 0,
+                                    activeLine: 0,
+                                    activeWord: 0
+                                };
                                 saveSettings();
+                                updateRecentDocumentUI(lastOpenedDocument);
                             }
                         });
                     }
@@ -2602,7 +2819,18 @@
             reader.onload = () => {
                 displayText(reader.result);
                 hideProgress();
+                
+                // Save document info
+                lastOpenedDocument = {
+                    name: currentFileName,
+                    text: reader.result,
+                    lastOpened: new Date().toLocaleString(),
+                    scrollPosition: 0,
+                    activeLine: 0,
+                    activeWord: 0
+                };
                 saveSettings();
+                updateRecentDocumentUI(lastOpenedDocument);
             };
             
             reader.readAsText(file);
@@ -2860,7 +3088,13 @@
                 }
             }
             
-            saveSettings();
+            // Update last opened document info
+            if (lastOpenedDocument) {
+                lastOpenedDocument.scrollPosition = textContent.scrollTop;
+                lastOpenedDocument.activeLine = currentLineIndex;
+                lastOpenedDocument.activeWord = currentWordIndex;
+                saveSettings();
+            }
         }
 
         // Scroll to keep active line in view
@@ -2902,30 +3136,12 @@
             });
         }
 
-        // Adjust zoom level
-        function adjustZoom(change) {
-            const newFontSize = Math.max(0.8, Math.min(10.0, currentFontSize + change));
-            if (newFontSize !== currentFontSize) {
-                currentFontSize = newFontSize;
-                updateFontSize();
-                zoomSlider.value = currentFontSize;
-                mobileZoomSlider.value = currentFontSize;
-                
-                const changeType = change > 0 ? '+' : '';
-                showZoomNotification(`Font size ${changeType}${change.toFixed(1)} (${currentFontSize.toFixed(1)}x)`);
-                
-                saveSettings();
-            }
-        }
-
         // Update font size based on currentFontSize
         function updateFontSize() {
             const lineElements = textContent.querySelectorAll('.line');
             lineElements.forEach(line => {
                 line.style.fontSize = `${currentFontSize}rem`;
             });
-            
-            zoomLevel.textContent = currentFontSize.toFixed(1) + 'x';
         }
 
         // Update Bootstrap tooltip
