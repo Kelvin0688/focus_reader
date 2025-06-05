@@ -237,6 +237,7 @@
 
         body.dark-mode .file-upload-container {
             border-color: #475569;
+            background-color: var(--card-bg-dark);
         }
 
         .file-upload-container:hover {
@@ -826,6 +827,10 @@
             margin: 0 auto;
         }
 
+        body.dark-mode .welcome-message {
+            color: #e2e8f0;
+        }
+
         .welcome-message h2 {
             font-size: 2rem;
             margin-bottom: 1rem;
@@ -836,6 +841,10 @@
             font-size: 1.1rem;
             color: var(--text-secondary);
             margin-bottom: 2rem;
+        }
+
+        body.dark-mode .welcome-message p {
+            color: #94a3b8;
         }
 
         /* Recent Document Notification */
@@ -849,6 +858,10 @@
             margin-bottom: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
+        }
+
+        body.dark-mode .recent-document {
+            background-color: rgba(67, 97, 238, 0.2);
         }
 
         .recent-document:hover {
@@ -873,6 +886,10 @@
         .recent-document .file-time {
             font-size: 0.8rem;
             color: var(--text-secondary);
+        }
+
+        body.dark-mode .recent-document .file-time {
+            color: #94a3b8;
         }
 
         /* Responsive Styles */
@@ -2029,7 +2046,9 @@
             
             // Mobile settings toggle
             mobileSettingsToggle.addEventListener('click', toggleMobileSettings);
-            closeMobileSettings.addEventListener('click', toggleMobileSettings);
+            closeMobileSettings.addEventListener('click', () => {
+                mobileSettingsPanel.style.display = 'none';
+            });
             
             // Close dropdowns when clicking outside
             document.addEventListener('click', (e) => {
@@ -2196,6 +2215,7 @@
                 mobileSettingsPanel.style.display = 'block';
                 searchContainer.style.display = 'none';
                 bookmarksPanel.style.display = 'none';
+                showMobileNav(); // Keep the nav visible when settings are open
             }
         }
 
@@ -2228,6 +2248,7 @@
             isSolidCoverActive = !isSolidCoverActive;
             document.body.classList.toggle('solid-cover', isSolidCoverActive);
             updateSolidCoverIcon();
+            updateCoverColor(); // Ensure cover color is applied
             saveSettings();
         }
 
@@ -2240,6 +2261,7 @@
                 searchInput.focus();
                 bookmarksPanel.style.display = 'none';
                 mobileSettingsPanel.style.display = 'none';
+                showMobileNav(); // Keep the nav visible when search is open
             }
         }
 
@@ -2299,6 +2321,7 @@
                 bookmarksPanel.style.display = 'block';
                 searchContainer.style.display = 'none';
                 mobileSettingsPanel.style.display = 'none';
+                showMobileNav(); // Keep the nav visible when bookmarks are open
             }
         }
 
@@ -2386,6 +2409,13 @@
             isWordMode = !isWordMode;
             document.body.classList.toggle('word-mode');
             updateWordModeIcon();
+            
+            if (isWordMode && lines.length > 0) {
+                splitCurrentLineIntoWords();
+            } else if (!isWordMode && words.length > 0) {
+                combineWordsBackToLine();
+            }
+            
             saveSettings();
         }
 
@@ -3122,6 +3152,22 @@
                 top: newScrollPos > 0 ? newScrollPos : 0,
                 behavior: 'smooth'
             });
+            
+            // Find the line that's now at the center of the viewport
+            setTimeout(() => {
+                const viewportCenter = textContent.scrollTop + (containerHeight / 2);
+                const lineElements = textContent.querySelectorAll('.line');
+                
+                for (let i = 0; i < lineElements.length; i++) {
+                    const lineTop = lineElements[i].offsetTop;
+                    const lineBottom = lineTop + lineElements[i].offsetHeight;
+                    
+                    if (viewportCenter >= lineTop && viewportCenter <= lineBottom) {
+                        updateActiveLine(i);
+                        break;
+                    }
+                }
+            }, 300);
         }
 
         // Go to next page
@@ -3134,6 +3180,22 @@
                 top: newScrollPos < maxScroll ? newScrollPos : maxScroll,
                 behavior: 'smooth'
             });
+            
+            // Find the line that's now at the center of the viewport
+            setTimeout(() => {
+                const viewportCenter = textContent.scrollTop + (containerHeight / 2);
+                const lineElements = textContent.querySelectorAll('.line');
+                
+                for (let i = 0; i < lineElements.length; i++) {
+                    const lineTop = lineElements[i].offsetTop;
+                    const lineBottom = lineTop + lineElements[i].offsetHeight;
+                    
+                    if (viewportCenter >= lineTop && viewportCenter <= lineBottom) {
+                        updateActiveLine(i);
+                        break;
+                    }
+                }
+            }, 300);
         }
 
         // Update font size based on currentFontSize
@@ -3159,6 +3221,7 @@
             document.documentElement.style.setProperty('--active-text-color', activeTextColor);
             document.documentElement.style.setProperty('--cover-color', coverColor);
             document.documentElement.style.setProperty('--letter-spacing', `${letterSpacing}px`);
+            updateCoverColor(); // Ensure cover color is applied
         }
 
         // Initialize the app
