@@ -675,11 +675,11 @@
         }
 
         .mobile-nav-btn.up {
-            top: 80px;
+            bottom: 100px;
         }
 
         .mobile-nav-btn.down {
-            bottom: 80px;
+            bottom: 30px;
         }
 
         /* New Bottom Navigation Bar */
@@ -989,14 +989,6 @@
                 font-size: 1.2rem;
             }
             
-            .mobile-nav-btn.up {
-                top: 60px;
-            }
-            
-            .mobile-nav-btn.down {
-                bottom: 60px;
-            }
-            
             .read-container {
                 height: calc(100vh - 60px);
             }
@@ -1037,6 +1029,63 @@
                 width: 44px;
                 height: 44px;
                 font-size: 1.1rem;
+            }
+        }
+
+        /* Landscape mobile view */
+        @media (max-width: 992px) and (orientation: landscape) {
+            .navbar {
+                display: none !important;
+            }
+            
+            .read-container {
+                height: 100vh;
+                max-width: 100%;
+                border-radius: 0;
+            }
+            
+            .text-content {
+                height: calc(100% - 40px);
+                padding: 1rem;
+            }
+            
+            .document-title {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .mobile-nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                bottom: auto;
+                top: 50%;
+            }
+            
+            .mobile-nav-btn.up {
+                left: 20px;
+                transform: translateY(-50%);
+                top: calc(50% - 40px);
+            }
+            
+            .mobile-nav-btn.down {
+                left: 20px;
+                transform: translateY(-50%);
+                top: calc(50% + 40px);
+            }
+            
+            .mobile-bottom-nav {
+                display: none !important;
+            }
+            
+            .mobile-nav-handle {
+                display: none !important;
+            }
+            
+            .page-nav-btn {
+                width: 30px;
+                height: 60px;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -1268,7 +1317,7 @@
                     <i class="fas fa-file-upload"></i>
                 </div>
                 <h5>Upload a PDF or Text File</h5>
-                <p class="text-muted small">Drag & drop your file here or click to browse</p>
+                <p class="text-muted small txt">Drag & drop your file here or click to browse</p>
                 <input type="file" id="fileUpload" accept=".pdf,.txt" class="d-none">
                 <button class="btn btn-primary mt-2 px-4">
                     <i class="fas fa-cloud-upload-alt me-2"></i>Select File
