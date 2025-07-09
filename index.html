@@ -25,6 +25,7 @@
             --line-spacing: 1.8;
             --letter-spacing: 0;
             --cover-color: #000000;
+            --active-line-min-height: 15px;
         }
 
         body {
@@ -106,6 +107,7 @@
             height: calc(100vh - 120px);
             transition: all var(--transition-speed) ease;
             position: relative;
+            height: calc(100vh - 180px);
         }
 
         body.dark-mode .read-container {
@@ -135,6 +137,12 @@
             word-wrap: break-word;
             white-space: pre-wrap;
             scroll-margin: 100px;
+            min-height: var(--active-line-min-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-wrap: wrap;
         }
 
         body.no-blur .line {
@@ -152,6 +160,12 @@
             z-index: 2;
             position: relative;
             letter-spacing: var(--letter-spacing);
+            min-height: var(--active-line-min-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-wrap: wrap;
         }
 
         .word-highlight {
@@ -233,6 +247,8 @@
             margin: 1.5rem auto;
             max-width: 800px;
             transition: all var(--transition-speed) ease;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
         }
 
         body.dark-mode .file-upload-container {
@@ -318,6 +334,31 @@
 
         body.dark-mode ::-webkit-scrollbar-thumb {
             background: #475569;
+        }
+
+        .nav-buttons-container {
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            background-color: var(--bg-light);
+            border-top: 1px solid #e2e8f0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            gap: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .nav-buttons-container {
+                display: none !important;
+            }
+        }
+
+        body.dark-mode .nav-buttons-container {
+            background-color: var(--bg-dark);
+            border-top: 1px solid #475569;
         }
 
         .zoom-notification {
@@ -433,33 +474,38 @@
         }
 
         .page-nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: rgba(255, 255, 255, 0.8);
             border: none;
             color: var(--primary-color);
             font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
             z-index: 100;
-            border-radius: 0 8px 8px 0;
             opacity: 0.7;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
+        .page-nav-btn.prev,
         .page-nav-btn.next {
-            right: 0;
-            border-radius: 8px 0 0 8px;
+            position: static;
+            transform: none;
+            margin: 10px;
         }
 
         body.dark-mode .page-nav-btn {
             background: rgba(51, 65, 85, 0.8);
             color: #e2e8f0;
+        }
+
+        .page-nav-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         .bookmark-btn {
@@ -645,44 +691,53 @@
             background: #818cf8;
         }
 
+        /* Mobile Navigation Buttons Container */
+        .mobile-nav-buttons-container {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 100;
+            padding: 0 20px;
+        }
+
+        @media (min-width: 993px) {
+            .mobile-nav-buttons-container {
+                display: none !important;
+            }
+        }
+
         /* Mobile Navigation Buttons */
         .mobile-nav-btn {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            opacity: 0.9;
-            transition: all 0.3s ease;
-            display: none;
+            background: rgba(255, 255, 255, 0.8);
             border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .mobile-nav-btn:hover {
             opacity: 1;
-            transform: translateX(-50%) scale(1.05);
-            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
         }
 
-        .mobile-nav-btn.up {
-            bottom: 100px;
+        body.dark-mode .mobile-nav-btn {
+            background: rgba(51, 65, 85, 0.8);
+            color: #e2e8f0;
         }
 
-        .mobile-nav-btn.down {
-            bottom: 30px;
-        }
-
-        /* New Bottom Navigation Bar */
+        /* Mobile Bottom Navigation */
         .mobile-bottom-nav {
             position: fixed;
             bottom: 0;
@@ -690,15 +745,12 @@
             right: 0;
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            padding: 10px 0;
+            padding: 10px 0 15px 0; /* Extra bottom padding for handle */
             z-index: 1000;
-            transition: transform 0.3s ease;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             overflow-x: auto;
             white-space: nowrap;
-            display: none;
         }
-
         body.dark-mode .mobile-bottom-nav {
             background-color: rgba(30, 41, 59, 0.9);
             color: #e2e8f0;
@@ -710,6 +762,7 @@
             justify-content: space-between;
             width: 100%;
             min-width: max-content;
+            margin-bottom: 0; /* Remove extra space */
         }
 
         .mobile-nav-item {
@@ -717,8 +770,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 60px;
-            padding: 5px 10px;
+            min-width: 50px;
+            padding: 5px 8px;
             color: var(--text-primary);
             text-decoration: none;
             font-size: 0.8rem;
@@ -765,8 +818,8 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 20px;
+            width: 60px;
+            height: 15px;
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 10px 10px 0 0;
@@ -776,22 +829,30 @@
             cursor: pointer;
             z-index: 1001;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-            display: none;
+            padding: 0;
+            display: none; /* Initially hidden, will be shown when document is loaded */
         }
 
         body.dark-mode .mobile-nav-handle {
-            background-color: rgba(30, 41, 59, 0.9);
+            background-color: rgba(11, 14, 20, 0.9);
         }
 
         .mobile-nav-handle i {
             color: var(--text-primary);
             transition: transform 0.3s ease;
+            font-size: 0.9rem;
+            margin: 0;
+            line-height: 1;
         }
 
         body.dark-mode .mobile-nav-handle i {
             color: #e2e8f0;
         }
 
+        .mobile-nav-handle.active {
+            height: 20px;
+            padding: 0;
+        }
         .mobile-nav-handle.active i {
             transform: rotate(180deg);
         }
@@ -818,6 +879,27 @@
             background: var(--card-bg-dark);
             border: 1px solid #475569;
         }
+
+
+        @media (max-width: 992px) {
+            body.document-loaded .mobile-bottom-nav,
+            body.document-loaded .mobile-nav-handle {
+                display: block;
+            }
+        }
+        @media (min-width: 993px) {
+            .mobile-bottom-nav,
+            .mobile-nav-handle {
+                display: none !important;
+            }
+        }
+        /* Hide navigation controls when no document is loaded */
+        body:not(.document-loaded) .mobile-bottom-nav,
+        body:not(.document-loaded) .mobile-nav-handle {
+            display: none !important;
+        }
+
+
 
         /* Welcome Message */
         .welcome-message {
@@ -919,6 +1001,7 @@
             .file-upload-container {
                 max-width: 100%;
                 margin: 1rem;
+                height: calc(100vh - 60px);
             }
             
             .zoom-notification {
@@ -926,26 +1009,17 @@
                 right: 10px;
             }
             
-            /* Show mobile bottom nav */
-            .mobile-bottom-nav {
-                display: block;
-            }
-            
-            .mobile-nav-handle {
-                display: flex;
-            }
-            
-            /* Hide desktop nav items */
             .navbar-nav {
                 display: none !important;
+            }
+            
+            .mobile-bottom-nav,
+            .mobile-nav-handle {
+                display: block;
             }
         }
 
         @media (max-width: 768px) {
-            .mobile-nav-btn {
-                display: flex;
-            }
-            
             .navbar-brand .logo-text {
                 display: inline-block;
             }
@@ -970,42 +1044,11 @@
             .file-upload-icon {
                 font-size: 2rem;
             }
-            
-            .mobile-nav-item {
-                min-width: 55px;
-                padding: 5px 8px;
-                font-size: 0.7rem;
-            }
-            
-            .mobile-nav-item i {
-                font-size: 1.4rem;
-            }
         }
 
         @media (max-width: 576px) {
-            .mobile-nav-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-            }
-            
             .read-container {
                 height: calc(100vh - 60px);
-            }
-            
-            .mobile-nav-item {
-                min-width: 50px;
-                padding: 5px;
-                font-size: 0.65rem;
-            }
-            
-            .mobile-nav-item i {
-                font-size: 1.2rem;
-            }
-            
-            .mobile-nav-handle {
-                width: 80px;
-                height: 18px;
             }
         }
         
@@ -1053,40 +1096,27 @@
                 padding: 0.5rem;
                 font-size: 0.8rem;
             }
-            
-            .mobile-nav-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-                bottom: auto;
-                top: 50%;
-            }
-            
-            .mobile-nav-btn.up {
-                left: 20px;
-                transform: translateY(-50%);
-                top: calc(50% - 40px);
-            }
-            
-            .mobile-nav-btn.down {
-                left: 20px;
-                transform: translateY(-50%);
-                top: calc(50% + 40px);
-            }
-            
-            .mobile-bottom-nav {
-                display: none !important;
-            }
-            
-            .mobile-nav-handle {
-                display: none !important;
-            }
-            
-            .page-nav-btn {
-                width: 30px;
-                height: 60px;
-                font-size: 1.2rem;
-            }
+        }
+
+        /* Hide navigation controls when no document is loaded */
+        body:not(.document-loaded) .navbar-nav,
+        body:not(.document-loaded) .page-nav-btn,
+        body:not(.document-loaded) .mobile-nav-btn,
+        body:not(.document-loaded) .mobile-bottom-nav,
+        body:not(.document-loaded) .mobile-nav-handle {
+            display: none !important;
+        }
+
+        /* Show navigation controls when document is loaded */
+        body.document-loaded .page-nav-btn,
+        body.document-loaded .mobile-nav-btn,
+        body.document-loaded .mobile-bottom-nav,
+        body.document-loaded .mobile-nav-handle {
+            display: flex;
+        }
+
+        body.document-loaded .navbar-nav {
+            display: flex !important;
         }
     </style>
 </head>
@@ -1141,7 +1171,7 @@
                         </li>
                         
                         <li class="nav-item">
-                            <button id="ttsPauseToggle" class="control-btn me-2 tts-pause-btn" title="Pause Speech">
+                            <button id="ttsPauseToggle" class="control-btn me-2" title="Pause Speech">
                                 <i class="fas fa-pause"></i>
                             </button>
                         </li>
@@ -1184,7 +1214,7 @@
                                 <li><h6 class="dropdown-header">Line Spacing</h6></li>
                                 <li>
                                     <div class="spacing-slider-container">
-                                        <input type="range" class="spacing-slider" min="1.2" max="3" step="0.1" value="1.8">
+                                        <input type="range" class="spacing-slider" min="1.2" max="3" step="0.1" value="2.2">
                                         <div class="d-flex justify-content-between small">
                                             <span>Tight</span>
                                             <span>Loose</span>
@@ -1343,24 +1373,29 @@
                     <p>Upload a file to begin reading</p>
                 </div>
             </div>
-            <button class="page-nav-btn prev" id="prevPageBtn" title="Previous Page">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="page-nav-btn next" id="nextPageBtn" title="Next Page">
-                <i class="fas fa-chevron-right"></i>
-            </button>
         </div>
+
+    <!-- Navigation buttons container -->
+    <div class="nav-buttons-container">
+        <button class="page-nav-btn" id="prevPageBtn" title="Previous Line">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="page-nav-btn" id="nextPageBtn" title="Next Line">
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
 
     <!-- Mobile Navigation Buttons -->
-    <button class="mobile-nav-btn up" id="mobileUpBtn">
-        <i class="fas fa-chevron-up"></i>
-    </button>
-    <button class="mobile-nav-btn down" id="mobileDownBtn">
-        <i class="fas fa-chevron-down"></i>
-    </button>
+    <div class="mobile-nav-buttons-container">
+        <button class="mobile-nav-btn" id="mobilePrevBtn" title="Previous Line">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="mobile-nav-btn" id="mobileNextBtn" title="Next Line">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
 
-    <!-- Mobile Bottom Navigation -->
+   <!-- Mobile Bottom Navigation -->
     <div class="mobile-nav-handle" id="mobileNavHandle">
         <i class="fas fa-chevron-up"></i>
     </div>
@@ -1404,7 +1439,6 @@
             </a>
         </div>
     </div>
-
     <!-- Mobile Settings Panel -->
     <div class="mobile-settings-panel" id="mobileSettingsPanel">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -1426,7 +1460,7 @@
         <div class="mb-4">
             <h6 class="mb-2">Line Spacing</h6>
             <div class="spacing-slider-container">
-                <input type="range" class="spacing-slider" min="1.2" max="3" step="0.1" value="1.8">
+                <input type="range" class="spacing-slider" min="1.2" max="3" step="0.1" value="2.2">
                 <div class="d-flex justify-content-between small">
                     <span>Tight</span>
                     <span>Loose</span>
@@ -1553,8 +1587,8 @@
         const spacingSlider = document.querySelector('.spacing-slider');
         const letterSpacingSlider = document.querySelector('.letter-spacing-slider');
         const presetCoverButtons = document.querySelectorAll('.preset-cover-btn');
-        const mobileUpBtn = document.getElementById('mobileUpBtn');
-        const mobileDownBtn = document.getElementById('mobileDownBtn');
+        const mobilePrevBtn = document.getElementById('mobilePrevBtn');
+        const mobileNextBtn = document.getElementById('mobileNextBtn');
         const mobileBottomNav = document.getElementById('mobileBottomNav');
         const mobileNavHandle = document.getElementById('mobileNavHandle');
         const mobileThemeToggle = document.getElementById('mobileThemeToggle');
@@ -1600,13 +1634,16 @@
         let activeTextColor = '#4361ee';
         let currentFileName = '';
         let isPaused = false;
-        let lineSpacing = 1.8;
+        let lineSpacing = 2.2;
         let letterSpacing = 0;
         let bookmarks = [];
         let searchResults = [];
         let coverColor = '#000000';
         let isMobileNavVisible = true;
         let lastOpenedDocument = null;
+        let originalText = '';
+        let lineWidths = [];
+        let isResizing = false;
 
         // Initialize the application
         function init() {
@@ -1618,6 +1655,12 @@
             // Hide read container initially
             readContainer.classList.add('d-none');
             uploadContainer.classList.remove('d-none');
+            
+            // Make upload container scrollable
+            uploadContainer.style.overflowY = 'auto';
+            
+            // Initialize PDF.js worker
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js';
         }
 
         // Load settings from localStorage
@@ -1654,6 +1697,7 @@
                 activeLineBgColor = settings.activeLineBgColor;
                 selectColorOption(bgColorPicker, activeLineBgColor);
                 selectColorOption(mobileSettingsPanel.querySelector('.color-picker-container'), activeLineBgColor);
+                document.documentElement.style.setProperty('--active-line-bg', activeLineBgColor);
             }
             
             if (settings.activeTextColor) {
@@ -1984,6 +2028,11 @@
                     updateFontSize();
                     showZoomNotification(`Font size: ${currentFontSize.toFixed(1)}x`);
                     saveSettings();
+                    
+                    // Reflow text with new font size
+                    if (lines.length > 0) {
+                        reflowText();
+                    }
                 }
             });
             
@@ -1995,6 +2044,11 @@
                     updateFontSize();
                     showZoomNotification(`Font size: ${currentFontSize.toFixed(1)}x`);
                     saveSettings();
+                    
+                    // Reflow text with new font size
+                    if (lines.length > 0) {
+                        reflowText();
+                    }
                 }
             });
             
@@ -2055,8 +2109,30 @@
                 saveSettings();
             });
             
-            prevPageBtn.addEventListener('click', goToPreviousPage);
-            nextPageBtn.addEventListener('click', goToNextPage);
+            prevPageBtn.addEventListener('click', () => {
+                if (currentLineIndex > 0) {
+                    updateActiveLine(currentLineIndex - 1);
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', () => {
+                if (currentLineIndex < lines.length - 1) {
+                    updateActiveLine(currentLineIndex + 1);
+                }
+            });
+            
+            // Mobile navigation buttons
+            mobilePrevBtn.addEventListener('click', () => {
+                if (currentLineIndex > 0) {
+                    updateActiveLine(currentLineIndex - 1);
+                }
+            });
+            
+            mobileNextBtn.addEventListener('click', () => {
+                if (currentLineIndex < lines.length - 1) {
+                    updateActiveLine(currentLineIndex + 1);
+                }
+            });
             
             searchToggle.addEventListener('click', toggleSearchPanel);
             mobileSearchToggle.addEventListener('click', toggleSearchPanel);
@@ -2068,27 +2144,6 @@
             bookmarkToggle.addEventListener('click', toggleBookmarksPanel);
             mobileBookmarkToggle.addEventListener('click', toggleBookmarksPanel);
             addBookmarkBtn.addEventListener('click', addBookmark);
-            
-            // Mobile navigation buttons
-            mobileUpBtn.addEventListener('click', () => {
-                if (isWordMode) {
-                    navigateWords('prev');
-                } else {
-                    if (currentLineIndex > 0) {
-                        updateActiveLine(currentLineIndex - 1);
-                    }
-                }
-            });
-            
-            mobileDownBtn.addEventListener('click', () => {
-                if (isWordMode) {
-                    navigateWords('next');
-                } else {
-                    if (currentLineIndex < lines.length - 1) {
-                        updateActiveLine(currentLineIndex + 1);
-                    }
-                }
-            });
             
             // Mobile nav handle
             mobileNavHandle.addEventListener('click', toggleMobileNav);
@@ -2152,6 +2207,17 @@
                     showMobileNav();
                 }
             }, { passive: true });
+            
+            // Window resize handler for reflowing text
+            window.addEventListener('resize', () => {
+                if (!isResizing && lines.length > 0) {
+                    isResizing = true;
+                    setTimeout(() => {
+                        reflowText();
+                        isResizing = false;
+                    }, 100);
+                }
+            });
         }
 
         // Open last opened document
@@ -2164,6 +2230,9 @@
             
             uploadContainer.classList.add('d-none');
             readContainer.classList.remove('d-none');
+            
+            // Add document-loaded class to show navigation controls
+            document.body.classList.add('document-loaded');
             
             displayText(lastOpenedDocument.text);
             
@@ -2786,6 +2855,9 @@
             uploadContainer.classList.add('d-none');
             readContainer.classList.remove('d-none');
             
+            // Add document-loaded class to show navigation controls
+            document.body.classList.add('document-loaded');
+            
             showProgress();
             
             if (file.type === 'application/pdf') {
@@ -2918,10 +2990,12 @@
         // Display text in the reader
         function displayText(text) {
             textContent.innerHTML = "";
+            originalText = text;
             
-            lines = splitIntoSentences(text);
+            // First, split into paragraphs
+            let paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
             
-            if (lines.length === 0) {
+            if (paragraphs.length === 0) {
                 textContent.innerHTML = `
                     <div class="text-center py-5 text-muted">
                         <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
@@ -2932,6 +3006,67 @@
                 return;
             }
             
+            // Store the original paragraphs
+            lines = paragraphs;
+            
+            // Create line elements
+            reflowText();
+            
+            currentLineIndex = 0;
+            scrollToActiveLine();
+        }
+
+        // Reflow text based on current container width and font size
+        function reflowText() {
+            textContent.innerHTML = "";
+            
+            // Create a temporary span to measure text width
+            const tempSpan = document.createElement('span');
+            tempSpan.style.visibility = 'hidden';
+            tempSpan.style.position = 'absolute';
+            tempSpan.style.whiteSpace = 'nowrap';
+            tempSpan.style.fontSize = `${currentFontSize}rem`;
+            tempSpan.style.fontFamily = "'Inter', sans-serif";
+            document.body.appendChild(tempSpan);
+            
+            // Calculate max width for lines (80% of container width)
+            const containerWidth = textContent.clientWidth * 0.8;
+            
+            // Process each paragraph
+            let newLines = [];
+            lines.forEach(paragraph => {
+                let words = paragraph.split(/\s+/).filter(w => w.length > 0);
+                let currentLine = '';
+                
+                for (let word of words) {
+                    tempSpan.textContent = currentLine + (currentLine ? ' ' : '') + word;
+                    const lineWidth = tempSpan.offsetWidth;
+                    
+                    if (lineWidth <= containerWidth) {
+                        currentLine = currentLine + (currentLine ? ' ' : '') + word;
+                    } else {
+                        if (currentLine) {
+                            newLines.push(currentLine);
+                            currentLine = word;
+                        } else {
+                            // Handle very long words that exceed container width
+                            newLines.push(word);
+                        }
+                    }
+                }
+                
+                if (currentLine) {
+                    newLines.push(currentLine);
+                }
+            });
+            
+            // Remove temp span
+            document.body.removeChild(tempSpan);
+            
+            // Update lines with the reflowed text
+            lines = newLines;
+            
+            // Create line elements
             lines.forEach((line, index) => {
                 const lineElement = document.createElement('div');
                 lineElement.textContent = line;
@@ -2945,111 +3080,6 @@
                 }
                 textContent.appendChild(lineElement);
             });
-            
-            currentLineIndex = 0;
-            scrollToActiveLine();
-        }
-
-        // Improved text parsing algorithm
-        function splitIntoSentences(text) {
-            // First, normalize all whitespace to single spaces
-            text = text.replace(/\s+/g, ' ').trim();
-            
-            // Split by paragraphs first (double newlines)
-            let paragraphs = text.split(/\n\s*\n/);
-            
-            let result = [];
-            
-            paragraphs.forEach(paragraph => {
-                paragraph = paragraph.trim();
-                if (paragraph.length === 0) return;
-                
-                // If the paragraph is short enough, add it as is
-                if (paragraph.length < 120) {
-                    result.push(paragraph);
-                    return;
-                }
-                
-                // Split into sentences while preserving abbreviations
-                let sentences = [];
-                let currentSentence = '';
-                let inQuote = false;
-                let inParens = false;
-                
-                for (let i = 0; i < paragraph.length; i++) {
-                    const char = paragraph[i];
-                    currentSentence += char;
-                    
-                    // Track quotes and parentheses
-                    if (char === '"' || char === "'") inQuote = !inQuote;
-                    if (char === '(') inParens = true;
-                    if (char === ')') inParens = false;
-                    
-                    // Check for sentence endings when not in quotes or parentheses
-                    if (!inQuote && !inParens) {
-                        // Look for sentence-ending punctuation followed by space or end
-                        if (/[.!?]/.test(char) && (i === paragraph.length - 1 || /[\s"]/.test(paragraph[i + 1]))) {
-                            // Check for common abbreviations that shouldn't split sentences
-                            const abbrevCheck = currentSentence.toLowerCase().trim().split(/\s+/);
-                            const lastWord = abbrevCheck[abbrevCheck.length - 1];
-                            
-                            if (!isCommonAbbreviation(lastWord)) {
-                                sentences.push(currentSentence.trim());
-                                currentSentence = '';
-                                // Skip the space after the punctuation
-                                if (paragraph[i + 1] === ' ') i++;
-                            }
-                        }
-                    }
-                }
-                
-                // Add any remaining text
-                if (currentSentence.trim()) {
-                    sentences.push(currentSentence.trim());
-                }
-                
-                // Process each sentence to ensure proper length
-                sentences.forEach(sentence => {
-                    if (sentence.length < 120) {
-                        result.push(sentence);
-                        return;
-                    }
-                    
-                    // Split long sentences at natural breaks
-                    let parts = [];
-                    let currentPart = '';
-                    let words = sentence.split(' ');
-                    
-                    for (let word of words) {
-                        if ((currentPart + word).length < 100) {
-                            currentPart += (currentPart ? ' ' : '') + word;
-                        } else {
-                            if (currentPart) parts.push(currentPart);
-                            currentPart = word;
-                        }
-                    }
-                    
-                    if (currentPart) parts.push(currentPart);
-                    
-                    // Join parts with proper punctuation
-                    for (let part of parts) {
-                        result.push(part);
-                    }
-                });
-            });
-            
-            return result.filter(line => line.trim() !== '');
-        }
-
-        // Helper function to identify common abbreviations
-        function isCommonAbbreviation(word) {
-            const abbreviations = [
-                'mr.', 'mrs.', 'ms.', 'dr.', 'prof.', 'rev.', 'hon.', 'jr.', 'sr.', 
-                'st.', 'ave.', 'blvd.', 'rd.', 'ln.', 'etc.', 'e.g.', 'i.e.', 'vs.', 
-                'a.m.', 'p.m.', 'a.d.', 'b.c.', 'u.s.', 'u.k.', 'inc.', 'corp.', 'ltd.'
-            ];
-            
-            return abbreviations.includes(word.toLowerCase());
         }
 
         // Handle keyboard navigation
@@ -3059,40 +3089,26 @@
             if (isWordMode) {
                 switch (event.key) {
                     case 'ArrowRight':
+                    case 'ArrowDown': // Allow both right/down for next
                         navigateWords('next');
                         event.preventDefault();
                         break;
                     case 'ArrowLeft':
+                    case 'ArrowUp': // Allow both left/up for previous
                         navigateWords('prev');
                         event.preventDefault();
-                        break;
-                    case 'ArrowDown':
-                        if (currentLineIndex < lines.length - 1) {
-                            updateActiveLine(currentLineIndex + 1);
-                            if (isWordMode) splitCurrentLineIntoWords();
-                            event.preventDefault();
-                        }
-                        break;
-                    case 'ArrowUp':
-                        if (currentLineIndex > 0) {
-                            updateActiveLine(currentLineIndex - 1);
-                            if (isWordMode) {
-                                splitCurrentLineIntoWords();
-                                currentWordIndex = words.length - 1;
-                                highlightCurrentWord();
-                            }
-                            event.preventDefault();
-                        }
                         break;
                 }
             } else {
                 switch (event.key) {
+                    case 'ArrowRight':
                     case 'ArrowDown':
                         if (currentLineIndex < lines.length - 1) {
                             updateActiveLine(currentLineIndex + 1);
                             event.preventDefault();
                         }
                         break;
+                    case 'ArrowLeft':
                     case 'ArrowUp':
                         if (currentLineIndex > 0) {
                             updateActiveLine(currentLineIndex - 1);
@@ -3112,7 +3128,6 @@
                 }
             }
         }
-
         // Handle text click to select line
         function handleTextClick(event) {
             if (event.target.classList.contains('line')) {
@@ -3192,61 +3207,6 @@
             });
         }
 
-        // Go to previous page
-        function goToPreviousPage() {
-            const containerHeight = textContent.clientHeight;
-            const newScrollPos = textContent.scrollTop - containerHeight * 0.8;
-            
-            textContent.scrollTo({
-                top: newScrollPos > 0 ? newScrollPos : 0,
-                behavior: 'smooth'
-            });
-            
-            // Find the line that's now at the center of the viewport
-            setTimeout(() => {
-                const viewportCenter = textContent.scrollTop + (containerHeight / 2);
-                const lineElements = textContent.querySelectorAll('.line');
-                
-                for (let i = 0; i < lineElements.length; i++) {
-                    const lineTop = lineElements[i].offsetTop;
-                    const lineBottom = lineTop + lineElements[i].offsetHeight;
-                    
-                    if (viewportCenter >= lineTop && viewportCenter <= lineBottom) {
-                        updateActiveLine(i);
-                        break;
-                    }
-                }
-            }, 300);
-        }
-
-        // Go to next page
-        function goToNextPage() {
-            const containerHeight = textContent.clientHeight;
-            const newScrollPos = textContent.scrollTop + containerHeight * 0.8;
-            const maxScroll = textContent.scrollHeight - containerHeight;
-            
-            textContent.scrollTo({
-                top: newScrollPos < maxScroll ? newScrollPos : maxScroll,
-                behavior: 'smooth'
-            });
-            
-            // Find the line that's now at the center of the viewport
-            setTimeout(() => {
-                const viewportCenter = textContent.scrollTop + (containerHeight / 2);
-                const lineElements = textContent.querySelectorAll('.line');
-                
-                for (let i = 0; i < lineElements.length; i++) {
-                    const lineTop = lineElements[i].offsetTop;
-                    const lineBottom = lineTop + lineElements[i].offsetHeight;
-                    
-                    if (viewportCenter >= lineTop && viewportCenter <= lineBottom) {
-                        updateActiveLine(i);
-                        break;
-                    }
-                }
-            }, 300);
-        }
-
         // Update font size based on currentFontSize
         function updateFontSize() {
             const lineElements = textContent.querySelectorAll('.line');
@@ -3282,7 +3242,6 @@
             
             init();
         });
-        
     </script>
 </body>
 </html>
