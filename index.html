@@ -99,15 +99,14 @@
 
         .read-container {
             max-width: 90%;
-            margin: 0 auto;
+            margin: 1% auto;
             background: var(--card-bg-light);
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             overflow: hidden;
-            height: calc(100vh - 120px);
+            height: calc(90vh - 80px);
             transition: all var(--transition-speed) ease;
             position: relative;
-            height: calc(100vh - 180px);
         }
 
         body.dark-mode .read-container {
@@ -122,6 +121,11 @@
             scroll-behavior: smooth;
             position: relative;
             transition: background-color var(--transition-speed) ease;
+            background-color: var(--card-bg-light); /* Default light mode background */
+        }
+
+        body.dark-mode .text-content {
+            background-color: var(--card-bg-dark); /* Dark mode background */
         }
 
         .line {
@@ -1616,6 +1620,9 @@
         const recentFileTime = document.getElementById('recentFileTime');
 
         // State variables
+        let resizeTimeout = null;
+        let lastFontSizeUpdate = 0;
+        const RESIZE_DEBOUNCE_TIME = 100; // milliseconds
         let currentLineIndex = 0;
         let currentWordIndex = 0;
         let lines = [];
@@ -1651,6 +1658,8 @@
             loadSettings();
             updateUI();
             updateMobileNavIcons();
+            setupSmoothFontSlider();
+
             
             // Hide read container initially
             readContainer.classList.add('d-none');
@@ -2019,38 +2028,6 @@
                 saveSettings();
             });
             
-            // Sliders
-            zoomSlider.addEventListener('input', (e) => {
-                const newFontSize = parseFloat(e.target.value);
-                if (newFontSize !== currentFontSize) {
-                    currentFontSize = newFontSize;
-                    mobileZoomSlider.value = newFontSize;
-                    updateFontSize();
-                    showZoomNotification(`Font size: ${currentFontSize.toFixed(1)}x`);
-                    saveSettings();
-                    
-                    // Reflow text with new font size
-                    if (lines.length > 0) {
-                        reflowText();
-                    }
-                }
-            });
-            
-            mobileZoomSlider.addEventListener('input', (e) => {
-                const newFontSize = parseFloat(e.target.value);
-                if (newFontSize !== currentFontSize) {
-                    currentFontSize = newFontSize;
-                    zoomSlider.value = newFontSize;
-                    updateFontSize();
-                    showZoomNotification(`Font size: ${currentFontSize.toFixed(1)}x`);
-                    saveSettings();
-                    
-                    // Reflow text with new font size
-                    if (lines.length > 0) {
-                        reflowText();
-                    }
-                }
-            });
             
             spacingSlider.addEventListener('input', (e) => {
                 const newSpacing = parseFloat(e.target.value);
@@ -2220,6 +2197,57 @@
             });
         }
 
+        function setupSmoothFontSlider() {
+            const handleSliderChange = (e) => {
+                const now = Date.now();
+                const newFontSize = parseFloat(e.target.value);
+                
+                // Throttle rapid updates to maintain smoothness
+                if (now - lastFontSizeUpdate < 16) { // ~60fps
+                    return;
+                }
+                lastFontSizeUpdate = now;
+                
+                // Clear any pending updates
+                if (resizeTimeout) {
+                    clearTimeout(resizeTimeout);
+                }
+                
+                // Update display immediately for responsiveness
+                currentFontSize = newFontSize;
+                showZoomNotification(`Font size: ${currentFontSize.toFixed(1)}x`);
+                
+                // Sync other slider if this is a desktop/mobile slider
+                if (e.target === zoomSlider) {
+                    mobileZoomSlider.value = newFontSize;
+                } else if (e.target === mobileZoomSlider) {
+                    zoomSlider.value = newFontSize;
+                }
+                
+                // Use requestAnimationFrame for smooth visual updates
+                requestAnimationFrame(() => {
+                    // Apply font size change immediately to visible elements
+                    const lineElements = textContent.querySelectorAll('.line');
+                    lineElements.forEach(line => {
+                        line.style.fontSize = `${currentFontSize}rem`;
+                    });
+                    
+                    // Full reflow debounced for performance
+                    resizeTimeout = setTimeout(() => {
+                        reflowText();
+                        saveSettings();
+                    }, RESIZE_DEBOUNCE_TIME);
+                });
+            };
+            
+            // Update both desktop and mobile slider event listeners
+            zoomSlider.removeEventListener('input', handleSliderChange);
+            zoomSlider.addEventListener('input', handleSliderChange);
+            
+            mobileZoomSlider.removeEventListener('input', handleSliderChange);
+            mobileZoomSlider.addEventListener('input', handleSliderChange);
+        }
+
         // Open last opened document
         function openLastDocument() {
             if (!lastOpenedDocument) return;
@@ -2322,6 +2350,8 @@
         function updateCoverColor() {
             if (isSolidCoverActive) {
                 textContent.style.backgroundColor = coverColor;
+            } else {
+                textContent.style.backgroundColor = ''; // Reset to default
             }
         }
 
@@ -2365,8 +2395,15 @@
         function toggleSolidCover() {
             isSolidCoverActive = !isSolidCoverActive;
             document.body.classList.toggle('solid-cover', isSolidCoverActive);
+            
+            // Clear the background color when cover is disabled
+            if (!isSolidCoverActive) {
+                textContent.style.backgroundColor = '';
+            } else {
+                updateCoverColor(); // Ensure cover color is applied when enabled
+            }
+            
             updateSolidCoverIcon();
-            updateCoverColor(); // Ensure cover color is applied
             saveSettings();
         }
 
@@ -3018,9 +3055,19 @@
 
         // Reflow text based on current container width and font size
         function reflowText() {
+            if (!originalText) return;
+
+            // Store current reading position
+            const currentScrollPosition = textContent.scrollTop;
+            const currentActiveLine = currentLineIndex;
+            const currentActiveWord = currentWordIndex;
+            const currentActiveLineTop = currentLineIndex >= 0 ? 
+                textContent.querySelectorAll('.line')[currentLineIndex]?.offsetTop || 0 : 0;
+
+            // Clear container
             textContent.innerHTML = "";
-            
-            // Create a temporary span to measure text width
+
+            // Create a temporary span for measurements
             const tempSpan = document.createElement('span');
             tempSpan.style.visibility = 'hidden';
             tempSpan.style.position = 'absolute';
@@ -3028,13 +3075,15 @@
             tempSpan.style.fontSize = `${currentFontSize}rem`;
             tempSpan.style.fontFamily = "'Inter', sans-serif";
             document.body.appendChild(tempSpan);
-            
+
             // Calculate max width for lines (80% of container width)
             const containerWidth = textContent.clientWidth * 0.8;
             
-            // Process each paragraph
+            // Process the original text to maintain consistency
+            let paragraphs = originalText.split(/\n\s*\n/).filter(p => p.trim().length > 0);
             let newLines = [];
-            lines.forEach(paragraph => {
+
+            paragraphs.forEach(paragraph => {
                 let words = paragraph.split(/\s+/).filter(w => w.length > 0);
                 let currentLine = '';
                 
@@ -3049,8 +3098,23 @@
                             newLines.push(currentLine);
                             currentLine = word;
                         } else {
-                            // Handle very long words that exceed container width
-                            newLines.push(word);
+                            // Handle very long words by breaking them
+                            while (word.length > 0) {
+                                let partialWord = '';
+                                for (let i = 0; i < word.length; i++) {
+                                    tempSpan.textContent = partialWord + word[i];
+                                    if (tempSpan.offsetWidth > containerWidth) {
+                                        newLines.push(partialWord);
+                                        partialWord = word[i];
+                                    } else {
+                                        partialWord += word[i];
+                                    }
+                                }
+                                if (partialWord) {
+                                    currentLine = partialWord;
+                                }
+                                word = '';
+                            }
                         }
                     }
                 }
@@ -3059,27 +3123,81 @@
                     newLines.push(currentLine);
                 }
             });
-            
+
             // Remove temp span
             document.body.removeChild(tempSpan);
-            
+
             // Update lines with the reflowed text
             lines = newLines;
-            
-            // Create line elements
+
+            // Recreate line elements
             lines.forEach((line, index) => {
                 const lineElement = document.createElement('div');
                 lineElement.textContent = line;
                 lineElement.className = 'line';
                 lineElement.style.fontSize = `${currentFontSize}rem`;
                 
-                if (index === 0) {
+                if (index === currentActiveLine) {
                     lineElement.classList.add('active');
                     lineElement.style.backgroundColor = activeLineBgColor;
                     lineElement.style.color = activeTextColor;
                 }
                 textContent.appendChild(lineElement);
             });
+
+            // Restore reading position with precision
+            if (currentActiveLine >= 0 && currentActiveLine < lines.length) {
+                // First try to match the exact line content
+                let bestMatchIndex = currentActiveLine;
+                
+                // If content doesn't match, find the closest position
+                if (lines[currentActiveLine] !== lines[bestMatchIndex]) {
+                    bestMatchIndex = lines.findIndex(l => l === lines[currentActiveLine]);
+                    if (bestMatchIndex === -1) {
+                        // Fallback to percentage-based position
+                        bestMatchIndex = Math.min(
+                            Math.floor((currentActiveLine / lines.length) * newLines.length),
+                            newLines.length - 1
+                        );
+                    }
+                }
+
+                // Update current line index
+                currentLineIndex = bestMatchIndex;
+                
+                // Highlight the active line
+                const lineElements = textContent.querySelectorAll('.line');
+                if (lineElements[currentLineIndex]) {
+                    lineElements[currentLineIndex].classList.add('active');
+                    lineElements[currentLineIndex].style.backgroundColor = activeLineBgColor;
+                    lineElements[currentLineIndex].style.color = activeTextColor;
+                }
+
+                // Calculate the target scroll position
+                let targetScrollPosition;
+                if (lineElements[currentLineIndex]) {
+                    targetScrollPosition = lineElements[currentLineIndex].offsetTop - 
+                                        (textContent.clientHeight / 2) + 
+                                        (lineElements[currentLineIndex].clientHeight / 2);
+                } else {
+                    // Fallback to percentage-based scroll position
+                    targetScrollPosition = (currentScrollPosition / textContent.scrollHeight) * 
+                                        textContent.scrollHeight;
+                }
+
+                // Apply the scroll position
+                textContent.scrollTo({
+                    top: targetScrollPosition,
+                    behavior: 'auto'
+                });
+
+                // If in word mode, restore word position
+                if (isWordMode && currentActiveWord >= 0) {
+                    splitCurrentLineIntoWords();
+                    currentWordIndex = Math.min(currentActiveWord, words.length - 1);
+                    highlightCurrentWord();
+                }
+            }
         }
 
         // Handle keyboard navigation
