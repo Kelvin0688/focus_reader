@@ -1379,15 +1379,6 @@
             </div>
         </div>
 
-    <!-- Navigation buttons container -->
-    <div class="nav-buttons-container">
-        <button class="page-nav-btn" id="prevPageBtn" title="Previous Line">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="page-nav-btn" id="nextPageBtn" title="Next Line">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </div>
 
     <!-- Mobile Navigation Buttons -->
     <div class="mobile-nav-buttons-container">
@@ -1395,6 +1386,16 @@
             <i class="fas fa-chevron-left"></i>
         </button>
         <button class="mobile-nav-btn" id="mobileNextBtn" title="Next Line">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+     <!-- Navigation buttons container -->
+     <div class="nav-buttons-container">
+        <button class="page-nav-btn" id="prevPageBtn" title="Previous Line">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="page-nav-btn" id="nextPageBtn" title="Next Line">
             <i class="fas fa-chevron-right"></i>
         </button>
     </div>
@@ -1972,10 +1973,9 @@
             uploadToggle.addEventListener('click', toggleUploadVisibility);
             mobileUploadToggle.addEventListener('click', toggleUploadVisibility);
             
-            document.querySelector('.file-upload-label button').addEventListener('click', (e) => {
-                e.preventDefault();
-                fileUpload.click();
-            });
+            document.querySelector('.file-upload-label').addEventListener('click', () => {
+            fileUpload.click();
+        });
             
             // Recent document click handler
             recentDocument.addEventListener('click', () => {
